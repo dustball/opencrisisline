@@ -10,7 +10,7 @@
     $sql = "select 2+2 as test";       
     $result = mysql_query($sql) or die("Failed Query #SE101: ".mysql_error());    
     while ($row = mysql_fetch_assoc($result)) {
-		$test = $row['test']));
+		$test = $row['test'];
         if ($test!=4) {
             die("Setup failed MySQL test, please edit config.php");
         }
