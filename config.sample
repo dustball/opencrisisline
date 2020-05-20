@@ -29,6 +29,7 @@ $db_pass = "dbpass";
 require "twilio.php";
 
 function logError($err) {
+  global $admin_email;
   mail($admin_email,"[$system_name] Error","http://".$_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"]."\n\n".print_r($_REQUEST,true)."\n\n\n".print_r($err,true));
 }
 
@@ -38,13 +39,14 @@ function logAndDie($err) {
 }
 
 function get_db() {
+  global $db_host, $db_user, $db_pass, $db_name;
   $link = mysql_pconnect($db_host, $db_user, $db_pass);
   if (!$link) {
-    logAndDie('Could not connect #301: ' . mysql_error());
+    logAndDie('Could not connect #C301: ' . mysql_error());
   }
   $db_selected = mysql_select_db($db_name, $link);
   if (!$db_selected) {
-    logAndDie('Can\'t use db #302: ' . mysql_error());
+    logAndDie('Can\'t use db #C302: ' . mysql_error());
   }
   return $link;
 }
