@@ -22,7 +22,7 @@ Open Crisis Line can be installed anywhere, but custom installation instructions
 2. Domains -> Manage Domains -> "Add hosting" button.  Fill out the top form called "Fully Hosted".  Create a new user for the site, doesn't matter what PHP mode you choose since we will make our own below.  Make note of the password on the resulting page.
 3. FTP & SSH Users -> Manage Users -> choose newly created user -> Show Info -> Edit Access -> SSH ON / Secure connection (FTP disabled)
 4. More -> MySQL Databases -> Create new.  Fill out the form, creating a new hostname and a new database user.  Make note of the password.
-5. SSH into the account created in step #2 and enter the following commands:
+5. SSH into the account created in step #2 and enter the following commands one line at a time:
 
 ```Shell
 wget "https://curl.haxx.se/download/curl-7.70.0.tar.gz"
@@ -33,7 +33,6 @@ cd curl-7.70.0
 make
 make install
 cd ~
-  
 wget "https://www.php.net/distributions/php-5.6.40.tar.gz"
 tar -zxvf php-5.6.40.tar.gz
 rm php-5.6.40.tar.gz
@@ -41,6 +40,7 @@ cd php-5.6.40
 ./configure --prefix=/home/`whoami`/local --with-zend-vm=GOTO --enable-cgi --enable-fpm --enable-libxml --enable-bcmath --enable-calendar= --enable-ctype --enable-dom --enable-exif --enable-fileinfo --enable-filter --enable-ftp --enable-hash --enable-intl --enable-json --enable-mbstring --enable-mbregex --enable-mbregex-backtrack --enable-opcache --enable-pcntl --enable-pdo --enable-phar --enable-posix --enable-session --enable-shmop --enable-simplexml --enable-soap --enable-sockets --enable-sysvmsg --enable-sysvsem --enable-sysvshm --enable-tokenizer --enable-wddx --enable-xml --enable-xmlreader --enable-xmlwriter --enable-zip --with-pcre-regex --with-sqlite3 --with-zlib --with-bz2 --with-kerberos --with-gd --with-jpeg-dir=/usr --with-png-dir=/usr --with-zlib-dir=/usr --with-freetype-dir=/usr --with-gettext --with-mhash --with-iconv --with-mysql --with-mysql-sock=/No-MySQL-hostname-was-specified --with-mysqli --enable-mysqlnd --with-pdo-mysql --with-pdo-sqlite --with-readline  --with-curl=/home/`whoami`/curl # 5 minutes
 make; echo "Done compiling" | mail you@youremail.com # This will take ~25 minutes
 make install
+cd ~
 export PATH=$HOME/local/bin:$PATH
 echo "export PATH=$HOME/local/bin:\$PATH" >> ~/.bash_profile
 . ~/.bash_profile
