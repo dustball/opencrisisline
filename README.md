@@ -47,6 +47,7 @@ echo "export PATH=$HOME/local/bin:\$PATH" >> ~/.bash_profile
 cd *.com  # go into your web directory (this command assumes your domain ends in .com)
 git clone https://github.com/dustball/opencrisisline.git
 cd opencrisisline
+sed "s|PATHTOPHP|${HOME}|" .htaccess.sample > .htaccess
 cp config.sample config.php 
 pico config.php # edit ...
 php setup.php

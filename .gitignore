@@ -1,0 +1,5 @@
+config.php
+*.bak
+*.txt
+.htaccess
+
