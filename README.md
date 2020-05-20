@@ -1,4 +1,4 @@
-![Open Crisis Line](ocl-logo.png){:style="float:right; margin:7px; border-radius:10px"}
+<img align="right" src="ocl-logo.png" width="220" style="margin:7px; border-radius:10px" />
 # Open Crisis Line
 
 ## About
