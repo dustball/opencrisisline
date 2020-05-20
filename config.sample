@@ -1,0 +1,53 @@
+<?php
+
+
+$ApiVersion = "2010-04-01";
+
+
+$help_line_number = "+16505551212"; 
+$table_name = "opencrisisline";
+$system_name = "Our Help Line";
+$logo = "ocl-logo.png";
+$volunteer = "volunteer";
+
+
+$report_number = "+16505551234"; 
+$admin_email = "admin@email.com"
+$admin_phone = "650.555.1212";
+$admin_handle = "Admin";
+$master_pass = "donothing";
+$friendly_phone = "(650) 555-HELP";
+
+$AccountSid = "AC01234567890123456789012345678901";
+$AuthToken = "01234567890123456789012345678901";
+
+$db_host = "dbhostname.sample.com";
+$db_name = "databasename";
+$db_user = "dbuser";
+$db_pass = "dbpass";
+
+require "twilio.php";
+
+function logError($err) {
+  mail($admin_email,"[$system_name] Error","http://".$_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"]."\n\n".print_r($_REQUEST,true)."\n\n\n".print_r($err,true));
+}
+
+function logAndDie($err) {
+  logError($err);
+  die($err);
+}
+
+function get_db() {
+  $link = mysql_pconnect($db_host, $db_user, $db_pass);
+  if (!$link) {
+    logAndDie('Could not connect #301: ' . mysql_error());
+  }
+  $db_selected = mysql_select_db($db_name, $link);
+  if (!$db_selected) {
+    logAndDie('Can\'t use db #302: ' . mysql_error());
+  }
+  return $link;
+}
+
+
+$db = get_db();
