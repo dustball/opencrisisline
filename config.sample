@@ -51,5 +51,17 @@ function get_db() {
   return $link;
 }
 
+function sms0($from,$to,$sms) {
+  global $ApiVersion, $AccountSid, $AuthToken;
+  $client = new TwilioRestClient($AccountSid, $AuthToken);
+  $data = array(
+    "From" => $from,
+    "To" => $to,
+    "Body" => $sms
+  );
+  $response = $client->request("/$ApiVersion/Accounts/$AccountSid/SMS/Messages","POST",$data);
+
+  return;
+}
 
 $db = get_db();
