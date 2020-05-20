@@ -24,31 +24,33 @@ Open Crisis Line can be installed anywhere, but custom installation instructions
 4. More -> MySQL Databases -> Create new.  Fill out the form, creating a new hostname and a new database user.  Make note of the password.
 5. SSH into the account created in step #2 and enter the following commands:
 
-    wget "https://curl.haxx.se/download/curl-7.70.0.tar.gz"
-    tar -zxvf curl-7.70.0.tar.gz 
-    rm curl-7.70.0.tar.gz 
-    cd curl-7.70.0
-    ./configure --prefix=$HOME/curl  
-    make
-    make install
-    cd ~
-       
-    wget "https://www.php.net/distributions/php-5.6.40.tar.gz"
-    tar -zxvf php-5.6.40.tar.gz
-    rm php-5.6.40.tar.gz
-    cd php-5.6.40
-    ./configure --prefix=/home/`whoami`/local --with-zend-vm=GOTO --enable-cgi --enable-fpm --enable-libxml --enable-bcmath --enable-calendar= --enable-ctype --enable-dom --enable-exif --enable-fileinfo --enable-filter --enable-ftp --enable-hash --enable-intl --enable-json --enable-mbstring --enable-mbregex --enable-mbregex-backtrack --enable-opcache --enable-pcntl --enable-pdo --enable-phar --enable-posix --enable-session --enable-shmop --enable-simplexml --enable-soap --enable-sockets --enable-sysvmsg --enable-sysvsem --enable-sysvshm --enable-tokenizer --enable-wddx --enable-xml --enable-xmlreader --enable-xmlwriter --enable-zip --with-pcre-regex --with-sqlite3 --with-zlib --with-bz2 --with-kerberos --with-gd --with-jpeg-dir=/usr --with-png-dir=/usr --with-zlib-dir=/usr --with-freetype-dir=/usr --with-gettext --with-mhash --with-iconv --with-mysql --with-mysql-sock=/No-MySQL-hostname-was-specified --with-mysqli --enable-mysqlnd --with-pdo-mysql --with-pdo-sqlite --with-readline  --with-curl=/home/`whoami`/curl # 5 minutes
-    make; echo "Done compiling" | mail you@youremail.com # This will take ~25 minutes
-    make install
-    export PATH=$HOME/local/bin:$PATH
-    echo "export PATH=$HOME/local/bin:\$PATH" >> ~/.bash_profile
-    . ~/.bash_profile
-    cd *.com  # go into your web directory (this command assumes your domain ends in .com)
-    git clone https://github.com/dustball/opencrisisline.git
-    cd opencrisisline
-    cp config.sample config.php 
-    pico config.php # edit ...
-    php setup.php
+```Shell
+wget "https://curl.haxx.se/download/curl-7.70.0.tar.gz"
+tar -zxvf curl-7.70.0.tar.gz 
+rm curl-7.70.0.tar.gz 
+cd curl-7.70.0
+./configure --prefix=$HOME/curl  
+make
+make install
+cd ~
+  
+wget "https://www.php.net/distributions/php-5.6.40.tar.gz"
+tar -zxvf php-5.6.40.tar.gz
+rm php-5.6.40.tar.gz
+cd php-5.6.40
+./configure --prefix=/home/`whoami`/local --with-zend-vm=GOTO --enable-cgi --enable-fpm --enable-libxml --enable-bcmath --enable-calendar= --enable-ctype --enable-dom --enable-exif --enable-fileinfo --enable-filter --enable-ftp --enable-hash --enable-intl --enable-json --enable-mbstring --enable-mbregex --enable-mbregex-backtrack --enable-opcache --enable-pcntl --enable-pdo --enable-phar --enable-posix --enable-session --enable-shmop --enable-simplexml --enable-soap --enable-sockets --enable-sysvmsg --enable-sysvsem --enable-sysvshm --enable-tokenizer --enable-wddx --enable-xml --enable-xmlreader --enable-xmlwriter --enable-zip --with-pcre-regex --with-sqlite3 --with-zlib --with-bz2 --with-kerberos --with-gd --with-jpeg-dir=/usr --with-png-dir=/usr --with-zlib-dir=/usr --with-freetype-dir=/usr --with-gettext --with-mhash --with-iconv --with-mysql --with-mysql-sock=/No-MySQL-hostname-was-specified --with-mysqli --enable-mysqlnd --with-pdo-mysql --with-pdo-sqlite --with-readline  --with-curl=/home/`whoami`/curl # 5 minutes
+make; echo "Done compiling" | mail you@youremail.com # This will take ~25 minutes
+make install
+export PATH=$HOME/local/bin:$PATH
+echo "export PATH=$HOME/local/bin:\$PATH" >> ~/.bash_profile
+. ~/.bash_profile
+cd *.com  # go into your web directory (this command assumes your domain ends in .com)
+git clone https://github.com/dustball/opencrisisline.git
+cd opencrisisline
+cp config.sample config.php 
+pico config.php # edit ...
+php setup.php
+```
     
 6. You should see a "All tests OK" message.
 
