@@ -28,7 +28,7 @@ Notice: this project was just uploaded to GitHub - please allow a few days for t
 
 ## Installation
 
-1. Make sure PHP 5.6 is working on your web host
+1. Make sure PHP 5.6 is working on your web host (see below for Dreamhost specifics)
 2. `cp config.sample config.php` and edit
 3. `php setup.php` to test setup and create database schema 
 4. Go to the web page -- i.e. open `index.php` with your browser -- and sign up yourself with a handle matching `$admin_handle` in the config
@@ -72,10 +72,8 @@ tar -zxvf php-5.6.40.tar.gz &&  rm php-5.6.40.tar.gz &&  cd php-5.6.40
 ./configure --prefix=/home/`whoami`/local --with-zend-vm=GOTO --enable-cgi --enable-fpm --enable-libxml --enable-bcmath --enable-calendar= --enable-ctype --enable-dom --enable-exif --enable-fileinfo --enable-filter --enable-ftp --enable-hash --enable-intl --enable-json --enable-mbstring --enable-mbregex --enable-mbregex-backtrack --enable-opcache --enable-pcntl --enable-pdo --enable-phar --enable-posix --enable-session --enable-shmop --enable-simplexml --enable-soap --enable-sockets --enable-sysvmsg --enable-sysvsem --enable-sysvshm --enable-tokenizer --enable-wddx --enable-xml --enable-xmlreader --enable-xmlwriter --enable-zip --with-pcre-regex --with-sqlite3 --with-zlib --with-bz2 --with-kerberos --with-gd --with-jpeg-dir=/usr --with-png-dir=/usr --with-zlib-dir=/usr --with-freetype-dir=/usr --with-gettext --with-mhash --with-iconv --with-mysql --with-mysql-sock=/No-MySQL-hostname-was-specified --with-mysqli --enable-mysqlnd --with-pdo-mysql --with-pdo-sqlite --with-readline  --with-curl=/home/`whoami`/curl # 2 minutes
 make; echo "Done compiling" | mail you@youremail.com # This will take ~25 minutes
 make install
-cd ~
-export PATH=$HOME/local/bin:$PATH
-echo "export PATH=$HOME/local/bin:\$PATH" >> ~/.bash_profile
-. ~/.bash_profile
+cd ~ && export PATH=$HOME/local/bin:$PATH
+echo "export PATH=$HOME/local/bin:\$PATH" >> ~/.bash_profile && . ~/.bash_profile
 cd *.com  # go into your web directory (this command assumes your domain ends in .com)
 git clone https://github.com/dustball/opencrisisline.git  # Change this to YOUR copy of opencrisisline if you forked it on Github
 cd opencrisisline

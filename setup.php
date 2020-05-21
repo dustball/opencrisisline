@@ -36,6 +36,11 @@ $result = mysql_query($sql) or die("Failed Query #SE102: ".mysql_error());
 while ($row = mysql_fetch_assoc($result)) {
     $test = $row['test'];
     if ($test==1) {
+        
+        if (!$report_number) {
+            die("Skipping Twilio test since report_number is null.  Consider setting it to your phone number for a minute to pass the test?");
+        }
+        
         $client = new TwilioRestClient($AccountSid, $AuthToken);
         $data = array(
             "From" => $help_line_number,
