@@ -11,7 +11,7 @@ $master_pass = "hunter2";            # See documentation (this password may show
 $people_to_call = 6;                 # How many people to call at once
 
 # Admin config
-$admin_email = "admin@email.com"
+$admin_email = "admin@email.com";
 $admin_phone = "650.555.1212";
 $admin_handle = "Admin";
 $report_number = "+16505551234";     # Optional - report all successful calls to this number, set to NULL to disable
