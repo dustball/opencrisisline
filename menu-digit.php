@@ -1,15 +1,17 @@
 <?php
 
     include 'config.php';
-    
-    # Uncomment to help debug    
-    # file_put_contents("md.txt",print_r($_REQUEST,true), FILE_APPEND | LOCK_EX);
-    
+
+    # This script is run when the caller presses a menu digit from the main menu
+
     if ($_REQUEST['AccountSid']!=$AccountSid) {
         # Make sure it's Twilio at the other end
         die("Access denied");
     }
-    
+
+    # Uncomment to help debug    
+    # file_put_contents("md.txt",print_r($_REQUEST,true), FILE_APPEND | LOCK_EX);    
+
     if($_REQUEST['Digits'] != '1' && $_REQUEST['Digits'] != '2' && $_REQUEST['Digits'] != '3' && $_REQUEST['Digits'] != '8') {
         header("Location: mainmenu.php");
         die;
