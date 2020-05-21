@@ -1,5 +1,5 @@
 config.php
+.htaccess
+.DS_Store
 *.bak
 *.txt
-.htaccess
-

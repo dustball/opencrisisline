@@ -4,8 +4,11 @@ if (!file_exists("config.php")) {
     die("Please copy config.sample to config.php and edit before running setup.");
 }
 
-include 'config.php';
+if(!defined('STDIN')) {
+    die("Please run this from the command-line only.");
+}
 
+include 'config.php';
 
 $sql = "select 2+2 as test";       
 $result = mysql_query($sql) or die("Failed Query #SE101: ".mysql_error());    
@@ -20,7 +23,10 @@ $sql = "SELECT 1 as test FROM $table_name LIMIT 1";
 $result = mysql_query($sql);
 if (!$result) {
         # Table does not exist.  Create.
-        $sql = "CREATE TABLE `$table_name` (`phone` char(10) NOT NULL, `$option2_column` int(11) DEFAULT NULL, `online` int(11) DEFAULT NULL, `txts` int(11) DEFAULT NULL, `handle` varchar(50) DEFAULT NULL, `$option3_column` int(11) DEFAULT NULL, `verified` varchar(1) DEFAULT ' ', PRIMARY KEY (`phone`)) ENGINE=MyISAM DEFAULT CHARSET=utf8";
+        if (!$option2_column || !$option3_column) {
+            die("Please don't comment out the schema config until after you've created the schema.\n");
+        }
+        $sql = "CREATE TABLE `$table_name` (`phone` char(10) NOT NULL, `handle` varchar(50) DEFAULT NULL, `online` int(11) DEFAULT NULL, `$option2_column` int(11) DEFAULT NULL,`$option3_column` int(11) DEFAULT NULL, `txts` int(11) DEFAULT NULL, `verified` varchar(1) DEFAULT ' ', PRIMARY KEY (`phone`)) ENGINE=MyISAM DEFAULT CHARSET=utf8";
         $result = mysql_query($sql) or die("Failed creating table $table_name: ".mysql_error());    
 }
 

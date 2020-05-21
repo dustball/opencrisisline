@@ -6,16 +6,25 @@
 
 This is an open-source suicide / crisis line that runs on PHP and MySQL.
 
-A paid Twilio account is required.  Use this [referral code](https://www.twilio.com/referral/WU8oSC) to credit both our accounts $10.
+A paid Twilio account is required.  
 
 ### How it works
 
-This software creates a help line that can be called by anybody that knows the number.  It is intended to be used by groups and organizations to support themselves, as opposed to a public help line which would have very different needs.
+This software creates a help line in the cloud which can be called by anybody that knows the number.  The current version is intended to be used by medium-to-large sized groups and organizations to support themselves, as opposed to a public help line which may have different needs.
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque sed ullamcorper risus. Nullam quis ultricies metus, a aliquet turpis. Nam non enim eu orci feugiat vehicula nec nec felis. Integer volutpat ac sapien ut commodo. Praesent porta laoreet est vel consectetur. Maecenas iaculis neque quis sem tempus pulvinar. Vestibulum eget erat ipsum. Morbi vulputate quam est, sed imperdiet augue aliquam vel. Pellentesque dui arcu, vulputate lobortis ante sed, rhoncus condimentum elit. Vestibulum fringilla suscipit purus nec finibus. Duis posuere interdum odio, non bibendum mi tristique vel. Ut ac faucibus mauris. Integer sed tincidunt massa.
+With just a web hosting account (that supports php 5.6 and MySQL) and paid Twilio account, you can launch a crisis line in an area code (aand possibly number) of your choosing. 
 
-Duis in dolor eu risus consequat efficitur. Aenean ipsum turpis, porta euismod tincidunt non, pellentesque at lorem. Donec ornare quam sit amet faucibus viverra. Suspendisse rutrum mollis scelerisque. Sed tincidunt lectus sed neque dapibus, eget elementum magna lobortis. Praesent et placerat dolor, at tempor quam. Ut vehicula fringilla enim dignissim maximus. Maecenas lobortis ligula in ante molestie pretium id vel felis. Morbi et fringilla felis. Sed a erat ut nunc vehicula elementum quis vitae libero. Phasellus malesuada, leo ut scelerisque feugiat, odio arcu tristique eros, eget commodo sem nisi eget arcu. In hac habitasse platea dictumst. Vestibulum ut risus ac augue cursus consequat.
+Once installation (see below) is finished, the administrator should invite volunteers to sign up.  They sign up with their phone number and a master password, specify their handle and pick which phone pools to opt-in to. (Unchecking all the options essentially puts their number on 'hold', which allows volunteers to mark themselves away 
 
+The system supports one, two, or three phone pools.  For example, you could have 1) the general pool 2) a group that may have a certain speciality or focus and 3) a graveyard (night shift) pool -- volunteers that specifically opt-in to recieve calls at any time of day.  When a caller reaches the line, they will be presented with the appropriate number of options.  Example: "To reach any volunteer, press 1. For code red, press 2.  For graveyward / night shift, press 3.".  
+
+Once an option is selected by the caller, it will call 6 (by default) random people from the appropriate list.  It will connect the call with whomever answers first.  If nobody answers or a voicemail system picks up, the caller should hang up and call back.  (Note: callers almost always get through the first time, but your messaging to potential callers should include note of how to handle such a situation.)
+
+At the end of the call, the system will inform both the caller and the volunteer the phone number of the other party.  This option can be disabled by setting `$anonymous = TRUE`  in `config.php`.  
+
+This software is simple but has been reliably deployed for years.
+
+Notice: this project was just uploaded to GitHub - please allow a few days for the dust to settle before installing.  Please contact [dustball](https://github.com/dustball) with any questions.
 
 ## Installation
 
@@ -26,14 +35,17 @@ Duis in dolor eu risus consequat efficitur. Aenean ipsum turpis, porta euismod t
 
 Twilio setup:
 
-1. Login to Twilio, buy a local number for $1/mo or a Toll-free number for $2/mo.
-2. Enter the URL to `mainmenu.php` and `sms.php` on the resulting page ([screenshot](https://i.imgur.com/0jy992M.png)).
+1. Create a Twilio account. If you use this [referral code](https://www.twilio.com/referral/WU8oSC), when you upgrade your account both of our accounts should get credited $10.
+1. Login to Twilio, buy a local number for $1/mo or a toll-free number for $2/mo.  You can search by area code or even entering words like "HELP".
+2. Enter the URL to `mainmenu.php` and `sms.php` on the resulting page (example: [screenshot](https://i.imgur.com/0jy992M.png)).
 
 How to test:
 
-1. Have a friend or test phone call the number - do not use your own phone 
-2. The friend should dial "8" (this is a hidden menu option for testing)
-3. It should ring your phone
+1. Make sure `setup.php` passes all tests 
+2. Have a friend or test phone call the number - do not use your own phone 
+3. The friend should dial "8" (this is a hidden menu option for testing)
+4. It should ring your phone.  
+5. Answer and talk for more than 15 seconds to trigger
 
 In case of error, check Twilio's [error logs](https://www.twilio.com/console/debugger) as well as the web access logs (`tail -f ~/logs/*/https/error.log` on DH).
 
@@ -42,11 +54,11 @@ In case of error, check Twilio's [error logs](https://www.twilio.com/console/deb
 Open Crisis Line can be installed anywhere, but custom installation instructions for Dreamhost are provided as a convienence below.
 
 1. Log into Dreamhost control panel
-2. Domains -> Manage Domains -> "Add hosting" button.  Fill out the top form called "Fully Hosted".  Create a new user for the site, doesn't matter what PHP mode you choose since we will make our own below.  Make note of the password on the resulting page.
-3. Domains -> SSL -> "Add" button -> Let's Encrypt (Free) -> "Select" button
-3. FTP & SSH Users -> Manage Users -> choose newly created user -> Show Info -> Edit Access -> SSH ON / Secure connection (FTP disabled)
-4. More -> MySQL Databases -> Create new.  Fill out the form, creating a new hostname and a new database user.  Make note of the password.
-5. SSH into the account created in step #2 and enter the following commands one line at a time:
+2. Domains -> Manage Domains -> "Add hosting" button.  Fill out the top form called "Fully Hosted". Create a new user for the site, doesn't matter what PHP mode you choose since we will make our own below.  Make note of the password on the resulting page.
+3. Domains -> SSL -> "Add" button next to host/domain you just created -> Let's Encrypt (Free) -> "Select" button
+4. FTP & SSH Users -> Manage Users -> choose newly created user -> Show Info -> Edit Access -> SSH ON / Secure connection (FTP disabled)
+5. More -> MySQL Databases -> Create new.  Fill out the form, creating a new hostname and a new database user.  Make note of the password.
+6. SSH into the account created in step #2 and enter the following commands one line at a time:
 
 ```Shell
 wget "https://curl.haxx.se/download/curl-7.70.0.tar.gz"
@@ -69,7 +81,7 @@ export PATH=$HOME/local/bin:$PATH
 echo "export PATH=$HOME/local/bin:\$PATH" >> ~/.bash_profile
 . ~/.bash_profile
 cd *.com  # go into your web directory (this command assumes your domain ends in .com)
-git clone https://github.com/dustball/opencrisisline.git
+git clone https://github.com/dustball/opencrisisline.git  # Change this to YOUR copy of opencrisisline if you forked it on Github
 cd opencrisisline
 sed "s|PATHTOPHP|${HOME}|" .htaccess.sample > .htaccess
 cp config.sample config.php 
@@ -77,7 +89,5 @@ pico config.php # edit ...
 php setup.php
 ```
     
-6. You should see a "All tests OK" message.
+7. You should see a "All tests OK" message.
 
-    
-    
