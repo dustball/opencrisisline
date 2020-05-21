@@ -14,38 +14,38 @@ This software creates a help line in the cloud which can be called by anybody th
 
 With just a web hosting account (that supports php 5.6 and MySQL) and paid Twilio account, you can launch a crisis line in an area code (aand possibly number) of your choosing. 
 
-Once installation (see below) is finished, the administrator should invite volunteers to sign up.  They sign up with their phone number and a master password, specify their handle and pick which phone pools to opt-in to. (Unchecking all the options essentially puts their number on 'hold', which allows volunteers to mark themselves away 
+Once installation (see below) is finished, the administrator should invite volunteers to sign up.  They sign up with their phone number and a master password, specify their handle and pick which phone pools to opt-in to. (Unchecking all the options essentially puts their number on 'hold', which allows volunteers to mark themselves away for vacations or other reasons.)
 
 The system supports one, two, or three phone pools.  For example, you could have 1) the general pool 2) a group that may have a certain speciality or focus and 3) a graveyard (night shift) pool -- volunteers that specifically opt-in to recieve calls at any time of day.  When a caller reaches the line, they will be presented with the appropriate number of options.  Example: "To reach any volunteer, press 1. For code red, press 2.  For graveyward / night shift, press 3.".  
 
-Once an option is selected by the caller, it will call 6 (by default) random people from the appropriate list.  It will connect the call with whomever answers first.  If nobody answers or a voicemail system picks up, the caller should hang up and call back.  (Note: callers almost always get through the first time, but your messaging to potential callers should include note of how to handle such a situation.)
+Once an option is selected by the caller, it will call 6 (default configuration) random people from the appropriate list.  It will connect the call with whomever answers first.  If nobody answers or a voicemail system picks up, the caller should hang up and call back.  (Note: callers almost always get through the first time, but your messaging to potential callers should include note of how to handle such a situation.)
 
 At the end of the call, the system will inform both the caller and the volunteer the phone number of the other party.  This option can be disabled by setting `$anonymous = TRUE`  in `config.php`.  
 
 This software is simple but has been reliably deployed for years.
 
-Notice: this project was just uploaded to GitHub - please allow a few days for the dust to settle before installing.  Please contact [dustball](https://github.com/dustball) with any questions.
+Notice: this project was just uploaded to GitHub - please allow a few days for the dust to settle before installing.  Please contact [dustball](https://github.com/dustball) with any questions -- May 20th, 2020.
 
 ## Installation
 
 1. Make sure PHP 5.6 is working on your web host
 2. `cp config.sample config.php` and edit
 3. `php setup.php` to test setup and create database schema 
-4. Go to web page and test /index.php - sign up yourself with a handle matching `$admin_handle` in the config
+4. Go to the web page -- i.e. open `index.php` with your browser -- and sign up yourself with a handle matching `$admin_handle` in the config
 
 Twilio setup:
 
 1. Create a Twilio account. If you use this [referral code](https://www.twilio.com/referral/WU8oSC), when you upgrade your account both of our accounts should get credited $10.
 1. Login to Twilio, buy a local number for $1/mo or a toll-free number for $2/mo.  You can search by area code or even entering words like "HELP".
-2. Enter the URL to `mainmenu.php` and `sms.php` on the resulting page (example: [screenshot](https://i.imgur.com/0jy992M.png)).
+2. Enter the full `https://` URL to `mainmenu.php` and `sms.php` on the resulting page (example: [screenshot](https://i.imgur.com/0jy992M.png)).
 
 How to test:
 
 1. Make sure `setup.php` passes all tests 
-2. Have a friend or test phone call the number - do not use your own phone 
+2. Have a friend call or use a test phone - do not use your own phone 
 3. The friend should dial "8" (this is a hidden menu option for testing)
 4. It should ring your phone.  
-5. Answer and talk for more than 15 seconds to trigger
+5. Optional: answer and talk for more than 15 seconds to trigger the 'call end' code
 
 In case of error, check Twilio's [error logs](https://www.twilio.com/console/debugger) as well as the web access logs (`tail -f ~/logs/*/https/error.log` on DH).
 
