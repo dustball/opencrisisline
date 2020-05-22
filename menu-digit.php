@@ -29,7 +29,7 @@
     } else if($_REQUEST['Digits'] == '3') {
         if (strpos($option3_friendly,"Graveyard")!==FALSE) {       
             # Bother 50% less people at night
-            $how_many_to_call = $how_many_to_call * 3 / 2;
+            $how_many_to_call = $how_many_to_call * 2 / 3;
         }        
         $sql = "select phone from $table_name where $option3_column=1 and verified='Y' order by rand() limit $how_many_to_call ";
     } if($_REQUEST['Digits'] == '8') {
