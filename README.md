@@ -29,6 +29,7 @@ Notice: this project was just uploaded to GitHub - please allow a few days for t
 ## Installation
 
 1. Make sure PHP 5.6 is working on your web host (see below for Dreamhost specifics)
+1. Known to work against MySQL 5.7.28
 2. `cp config.sample config.php` and edit
 3. `php setup.php` to test setup and create database schema 
 4. Go to the web page -- i.e. open `index.php` with your browser -- and sign up yourself with a handle matching `$admin_handle` in the config
