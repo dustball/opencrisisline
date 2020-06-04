@@ -50,9 +50,9 @@ How to test:
 
 In case of error, check Twilio's [error logs](https://www.twilio.com/console/debugger) as well as the web access logs (`tail -f ~/logs/*/https/error.log` on DH).
 
-### Dreamhost Installation
+### Dreamhost PHP 5.6.40 Installation
 
-Open Crisis Line can be installed anywhere, but custom installation instructions for Dreamhost are provided as a convienence below.
+Open Crisis Line can be installed anywhere, but custom installation instructions to install **PHP 5.6.40** for Dreamhost are provided as a convienence below.
 
 1. Log into Dreamhost control panel
 2. Domains -> Manage Domains -> "Add hosting" button.  Fill out the top form called "Fully Hosted". Create a new user for the site, doesn't matter what PHP mode you choose since we will make our own below.  Make note of the password on the resulting page.
