@@ -1,4 +1,4 @@
-<?
+<?php
 
 if (!file_exists("config.php")) {
     die("Please copy config.sample to config.php and edit before running setup.");
