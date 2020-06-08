@@ -8,6 +8,7 @@ if(!defined('STDIN')) {
     die("Please run this from the command-line only.");
 }
 
+# open the database among other things
 include 'config.php';
 
 $sql = "select 2+2 as test";       

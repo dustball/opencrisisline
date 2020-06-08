@@ -28,8 +28,9 @@
         1.  ~~./configure --prefix=/home/`whoami`/local --with-zend-vm=GOTO --enable-cgi --enable-fpm --enable-libxml --enable-bcmath --enable-calendar= --enable-ctype --enable-dom --enable-exif --enable-fileinfo --enable-filter --enable-ftp --enable-hash --enable-intl --enable-json --enable-mbstring --enable-mbregex --enable-mbregex-backtrack --enable-opcache --enable-pcntl --enable-pdo --enable-phar --enable-posix --enable-session --enable-shmop --enable-simplexml --enable-soap --enable-sockets --enable-sysvmsg --enable-sysvsem --enable-sysvshm --enable-tokenizer --enable-wddx --enable-xml --enable-xmlreader --enable-xmlwriter --enable-zip --with-pcre-regex --with-sqlite3 --with-zlib --with-bz2 --with-kerberos --with-gd --with-jpeg-dir=/usr --with-png-dir=/usr --with-zlib-dir=/usr --with-freetype-dir=/usr --with-gettext --with-mhash --with-iconv --with-mysql --with-mysql-sock=/No-MySQL-hostname-was-specified --with-mysqli --enable-mysqlnd --with-pdo-mysql --with-pdo-sqlite --with-readline  --with-curl=/home/`whoami`/curl # 2 minutes~~
         1.  ~~make; echo "Done compiling" | mail you@youremail.com # This will take ~25 minutes~~
         1.  ~~make install~~
-    1.  `cd ~ && export PATH=$HOME/local/bin:$PATH`
-    1.  `echo "export PATH=$HOME/local/bin:\$PATH" >> ~/.bash_profile && . ~/.bash_profile`
-    ``
+        1.  ~~cd ~ && export PATH=$HOME/local/bin:$PATH~~
+            1.  Assumed to put PHP 5.6.40 in path so not done
+        1.  ~~echo "export PATH=$HOME/local/bin:\$PATH" >> ~/.bash_profile && . ~/.bash_profile~~
+             1.  Assumed to put PHP 5.6.40 in path so not done
 
 

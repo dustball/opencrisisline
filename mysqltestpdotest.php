@@ -1,9 +1,9 @@
 <?php
 
-$host = 'brcaid.cspzofkgh5ed.us-west-1.rds.amazonaws.com';
-$db   = 'brcaid';
-$user = 'brcaidadmin';
-$pass = 'brcaidamdin42;';
+$host = 'brcaiddev.cspzofkgh5ed.us-west-1.rds.amazonaws.com';
+$db   = 'brcaiddevtest';
+$user = 'brcaiddevadmin';
+$pass = 'brcaiddevadmin69!';
 $charset = 'utf8mb4';
 
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";

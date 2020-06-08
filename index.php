@@ -10,15 +10,13 @@ if (empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] === "off") {
 header('Cache-Control: no-cache, must-revalidate');
 header('Expires: Mon, 01 Nov 2016 05:00:00 GMT');
 
+# open the database
 include "config.php";
 
-$sql = "SELECT 1 as test FROM $table_name LIMIT 1";       
-$result = mysql_query($sql);
-if (!$result) {
+if (!$db->query("SELECT 1 as test FROM $table_name LIMIT 1")) {
     print ("Please run setup.php first.");
     exit;
 }
-
 
 $loggedin = 0;
 
@@ -31,8 +29,16 @@ if ($_REQUEST['rpost'] && $phone) {
     $option3 = $_REQUEST['option3']?1:0;
     $online = $_REQUEST['online']?1:0;
     $txts = $_REQUEST['txts']?1:0;
-    $sql = "replace into $table_name (verified,handle,$option2_column,phone,$option3_column,online,txts) values ('Y','".mysql_real_escape_string($handle)."','".mysql_real_escape_string($option2)."','".mysql_real_escape_string($phone)."','".mysql_real_escape_string($option3)."','".mysql_real_escape_string($online)."','".mysql_real_escape_string($txts)."')";
-    $result = mysql_query($sql) or logAndDie("Failed Query #D102: ".mysql_error());
+
+    try {
+        $sql = $db->prepare("REPLACE INTO $table_name (verified = :verified, handle = :handle,
+                            $option2_column, phone = :phone, $option3_column, online = :online, txts = :txts)");
+        $sql->execute(array('verified' => 'Y',  'handle' => $handle,    'phone' => $phone,  'online' => $online,
+            'txts' => $txts));
+    }
+    catch (PDOException $e) {
+        logAndDie("Failed to run query in #D102:".$e->getMessage().'->'.(int)$e->getCode().array('exception' => $e));
+    }
     # Assume logged in if they made it this far
     $loggedin = 1;
     $error = "[OK - Information Saved]";
@@ -42,14 +48,21 @@ if ($_REQUEST['rpost'] && $phone) {
 if ($_REQUEST['password']) {
     $password = $_REQUEST['password'];
     $phone = preg_replace('/\D+/', '', $_REQUEST['phone']);
-    if (strlen($phone)!=10) {
+    if (strlen($phone) != 10) {
         $error = "Phone must be 10 digits exactly";
         $loggedin = 0;
-    } elseif (strtolower($password)==$master_pass) {
-        $sql = "select * from $table_name where phone='".mysql_real_escape_string($phone)."'";
-        $result = mysql_query($sql) or logAndDie("Failed Query #D103: ".mysql_error());
-        $row = mysql_fetch_assoc($result);
-        setcookie ("phonelogin", $phone, time()+60*60*24*365*3, "/", $_SERVER['SERVER_NAME']);    
+    } elseif (strtolower($password) == $master_pass) {
+        try {
+            $sql = $db->prepare("SELECT * FROM $table_name WHERE phone = :phone");
+            $sql->execute(array('phone' => $phone));
+        }
+        catch (PDOException $e) {
+            logAndDie("Failed to run query in #D103:" . $e->getMessage() . '->' .
+                (int)$e->getCode() . array('exception' => $e));
+        }
+        $row = $sql->fetch(PDO::FETCH_ASSOC);                                   # fetch one row
+        setcookie ("phonelogin", $phone, time()+60*60*24*365*3, "/",
+            $_SERVER['SERVER_NAME']);
         $loggedin = 1;
     } else {
         $error = "Invalid login";
@@ -57,9 +70,15 @@ if ($_REQUEST['password']) {
 }
 
 if ($phone && $loggedin) {
-    $sql = "select * from $table_name where phone='".mysql_real_escape_string($phone)."'";
-    $result = mysql_query($sql) or logAndDie("Failed Query #D104: ".mysql_error());
-    $row = mysql_fetch_assoc($result);
+    try {
+        $sql = $db->prepare("select * from $table_name where phone = :phone");
+        $sql->execute(array('phone' => $phone));
+    }
+    catch (PDOException $e) {
+        logAndDie("Failed to run query in #D104:" . $e->getMessage() . '->' .
+            (int)$e->getCode() . array('exception' => $e));
+    }
+    $row = $sql->fetch(PDO::FETCH_ASSOC);                                   # fetch one row
     $loggedin = 1;
 }
 
