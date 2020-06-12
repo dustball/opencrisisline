@@ -1,4 +1,7 @@
 <?php
+# is INCLUDED in many (all?) of the OpenCrisisOnline pages
+# opens databases as well as other functions
+# defines db as the database handle
 
 # Help line config
 $anonymous = FALSE;                  # Setting to FALSE will inform both caller and volunteer who they talked to
@@ -20,12 +23,12 @@ $admin_phone = "530.448.9672";
 #xxx???
 #$admin_handle = "brcaiddevadmin";
 #xxx???
-#$report_number = "530.448.9672";     # Optional - report all successful calls to this number, set to NULL to disable
+$report_number = "530.448.9672";     # Optional - report all successful calls to this number, set to NULL to disable
 
 # Twilio config
 $ApiVersion = "2010-04-01";                          # Do not change
-$AccountSid = "+12056497551";  # Get these from https://www.twilio.com/console
-$AuthToken = "382e6a104f4860d6b6c13c5de982faa2";
+$AccountSid = "AC388ebeb425f7a6acdfcde1fd5bfbfb65";                             # ***NOT*** phone number, get from https://www.twilio.com/console
+$AuthToken = "382e6a104f4860d6b6c13c5de982faa2";                                # Get from https://www.twilio.com/console
 
 # Database config
 $db_host = "brcaiddev.cspzofkgh5ed.us-west-1.rds.amazonaws.com";
@@ -34,7 +37,7 @@ $db_user = "brcaiddevadmin";
 $db_pass = "brcaiddevadmin69!";
 $db_charset = 'utf8mb4';
 #xxx???
-$table_name = "brcaiddevtest";
+$table_name = "brcaiddevtesttable";
 
 # Additional menu items, comment out or set to NULL to disable them 
 $option2_column = "opt2";                      
@@ -52,8 +55,8 @@ echo($admin_email." [$system_name] Error http://".$_SERVER["SERVER_NAME"].$_SERV
 }
 
 function logAndDie($err) {
-    logError($err);
-    die($err);
+    logError($err."\n");
+    die($err."\n");
 }
 
 function get_db() {
