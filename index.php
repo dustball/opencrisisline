@@ -53,7 +53,7 @@ if ($_REQUEST['password']) {
         $loggedin = 0;
     } elseif (strtolower($password) == $master_pass) {
         try {
-            $sql = $db->prepare("SELECT * FROM $table_name WHERE phone = :phone");
+            $sql = $db->prepare("SELECT * FROM $table_name WHERE $phone = :phone");
             $sql->execute(array('phone' => $phone));
         }
         catch (PDOException $e) {
@@ -71,7 +71,7 @@ if ($_REQUEST['password']) {
 
 if ($phone && $loggedin) {
     try {
-        $sql = $db->prepare("select * from $table_name where phone = :phone");
+        $sql = $db->prepare("select * from $table_name where $phone = :phone");
         $sql->execute(array('phone' => $phone));
     }
     catch (PDOException $e) {
