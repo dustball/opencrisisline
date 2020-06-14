@@ -3,3 +3,4 @@
 *.bak
 *.txt
 config.php
+/scratch.php
