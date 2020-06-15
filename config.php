@@ -28,7 +28,7 @@ $report_number = "530.448.9672";     # Optional - report all successful calls to
 # Twilio config
 $ApiVersion = "2010-04-01";                          # Do not change
 $AccountSid = "AC388ebeb425f7a6acdfcde1fd5bfbfb65";                             # ***NOT*** phone number, get from https://www.twilio.com/console
-$AuthToken = "382e6a104f4860d6b6c13c5de982faa2";                                # Get from https://www.twilio.com/console
+$AuthToken = "d1617dc7f0e896d8c39835fb859da9c6";                                # Get from https://www.twilio.com/console
 
 # Database config
 $db_host = "brcaiddev.cspzofkgh5ed.us-west-1.rds.amazonaws.com";
@@ -37,7 +37,7 @@ $db_user = "brcaiddevadmin";
 $db_pass = "brcaiddevadmin69!";
 $db_charset = 'utf8mb4';
 #xxx???
-$table_name = "brcaiddevtesttable";
+$table_name = "opencrisisline746";
 
 # Additional menu items, comment out or set to NULL to disable them 
 $option2_column = "opt2";                      

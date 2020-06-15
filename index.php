@@ -10,7 +10,7 @@ if (empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] === "off") {
 header('Cache-Control: no-cache, must-revalidate');                             # *this* instance to be cached anew
 header('Expires: Mon, 01 Nov 2016 05:00:00 GMT');                               # date in past forces *this* instance to be cached anew
 
-# open the database
+# open the database (variable db)
 include "config.php";
 
 if (!$db->query("SELECT 1 as test FROM $table_name LIMIT 1")) {
