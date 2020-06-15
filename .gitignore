@@ -2,5 +2,5 @@
 .DS_Store
 *.bak
 *.txt
-config.php
+/config.php
 /scratch.php
