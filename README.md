@@ -38,7 +38,9 @@ Twilio setup:
 
 1. Create a Twilio account. If you use this [referral code](https://www.twilio.com/referral/WU8oSC), when you upgrade your account both of our accounts should get credited $10.
 1. Buy a local number for $1/mo or a toll-free number for $2/mo.  You can search by area code or even entering words like "HELP".
-2. Enter the full `https://` URL to `mainmenu.php` and `sms.php` on the resulting page (example: [screenshot](https://i.imgur.com/0jy992M.png)).
+1. Go to [Twilo's Active Number] (https://www.twilio.com/console/phone-numbers/incoming) page and click on the number.
+    1. Scroll down to the second section titled "Voice & Fax".
+    1.  Enter the full `https://` URL to `mainmenu.php` and `sms.php` on the resulting page (example: [screenshot](https://i.imgur.com/0jy992M.png)).
 
 How to test:
 
