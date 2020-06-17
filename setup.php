@@ -16,14 +16,14 @@ try {
     $result = $db->query($sql);                                                 # $db := db handle set by included config.php
 }
 catch (PDOException $e) {                                                       # Couldn't connect to DBMS or particular database
-    logAndDie("Failed Query #SE101: ".$e->getMessage().'->'.(int)$e->getCode());
+    die("Failed Query #SE101: ".$e->getMessage().'->'.(int)$e->getCode());
 }
 
 #   should be safe to fetch as errors should have been caught above -> no try/catch
 while ($row = $result->fetch(PDO::FETCH_ASSOC)){
     $test = $row['test'];
     if ($test != 4) {
-        logAndDie("#SE110: Setup failed MySQL test, please edit config.php");       # not using try/catch as this is a logic issue not an database structure issue
+        die("#SE110: Setup failed MySQL test, please edit config.php");       # not using try/catch as this is a logic issue not an database structure issue
     }
 }
 
@@ -32,8 +32,9 @@ try {
     $result = $db->query($sql);
 }
 catch (PDOException $e) {
-    if ((int)$e->getCode() != 42) {                                               # if error is something else than table does not exist
-        logAndDie("#SE120: Failed to query table $table_name ->" . $e->getMessage() . '->' . (int)$e->getCode());
+    # if error is something else than table does not exist
+    if ((int)$e->getCode() != 42) {
+        die("#SE120: Failed to query table $table_name ->" . $e->getMessage() . '->' . (int)$e->getCode());
     }
     else {      # Table does not exist.  Create it.
         if (!$option2_column || !$option3_column) {                             # $option2_column & $option3_column defined in included config.php
@@ -42,18 +43,18 @@ catch (PDOException $e) {
 
         try {
             $sql = "CREATE TABLE `$table_name` (
-                                `phone` char(10) NOT NULL,
-                                `handle` varchar(50) DEFAULT NULL, 
-                                `online` int(11) DEFAULT NULL, 
-                                `$option2_column` int(11) DEFAULT NULL,
-                                `$option3_column` int(11) DEFAULT NULL, 
-                                `txts` int(11) DEFAULT NULL, 
-                                `verified` varchar(1) DEFAULT ' ', 
+                                `phone` CHAR(10) NOT NULL,
+                                `handle` VARCHAR(50) DEFAULT NULL, 
+                                `online` INT(11) DEFAULT NULL, 
+                                `$option2_column` INT(11) DEFAULT NULL,
+                                `$option3_column` INT(11) DEFAULT NULL, 
+                                `txts` INT(11) DEFAULT NULL, 
+                                `verified` VARCHAR(1) DEFAULT ' ', 
                                 PRIMARY KEY (`phone`)) ENGINE=MyISAM DEFAULT CHARSET=utf8";
             $response = $db->query($sql);
         }
         catch (PDOException $e) {
-            logAndDie("#SE130: Failed creating table $table_name: ".'->'.$e->getMessage().'->'.(int)$e->getCode());
+            die("#SE130: Failed creating table $table_name: ".'->'.$e->getMessage().'->'.(int)$e->getCode());
         }
     }
 }
@@ -63,11 +64,11 @@ try {
     $result = $db->query($sql);
 }
 catch (PDOException $e){
-    logAndDie("#SE130: Failed Query ".'->'.$e->getMessage().'->'.(int)$e->getCode());
+    die("#SE130: Failed Query ".'->'.$e->getMessage().'->'.(int)$e->getCode());
 }
 while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
     $test = $row['test'];
-    if ($test==1) {
+    if ($test == 1) {
         if (!$report_number) {
             die("#SE140: Skipping Twilio test since report_number is null.  Consider setting it to your phone number for a minute to pass the test?");
         }
@@ -78,12 +79,14 @@ while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
             "To" => $report_number,
             "Body" => "Hi! This is setup.php letting you know things are working."
         );
-        $response = $client->request("/$ApiVersion/Accounts/$AccountSid/SMS/Messages","POST",$data);
-        
-        if($response->IsError) {
-            die("\n#SE140: Twilio error: $response->ErrorMessage\n\n");
+
+        try {
+            $response = $client->request("/$ApiVersion/Accounts/$AccountSid/SMS/Messages","POST",$data);
         }
-        
+        catch (TwilioException $e) {
+            die("\n#SE140: Twilio error: $response->ErrorMessage and/or $e \n\n");
+        }
+
         if ($response->HttpStatus==201) {
             print "\nAll tests OK.\n\n";
         } else {

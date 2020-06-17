@@ -1,20 +1,22 @@
 <?php
 
-if (empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] === "off") {
-    $location = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-    header('HTTP/1.1 301 Moved Permanently');
-    header('Location: ' . $location);
-    exit;
-}
+//TODO:: uncomment index.php:HTTPS
+//if (empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] === "off") {
+//    $location = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+//    header('HTTP/1.1 301 Moved Permanently');
+//    header('Location: ' . $location);
+//    exit;
+//}
 
 header('Cache-Control: no-cache, must-revalidate');                             # *this* instance to be cached anew
 header('Expires: Mon, 01 Nov 2016 05:00:00 GMT');                               # date in past forces *this* instance to be cached anew
 
-# open the database (variable db)
-include "config.php";
+# among other things, open the database and assign to $db
+require_once "config.php";
 
-if (!$db->query("SELECT 1 as test FROM $table_name LIMIT 1")) {
-    print ("Please run setup.php first.");
+$sql = "SELECT 1 as test FROM $table_name LIMIT 1";
+if (!$db->query($sql)) {
+    echo "Please run setup.php first.";
     exit;
 }
 
@@ -29,9 +31,7 @@ else
 if ( ! isset($_REQUEST['rpost']) )
     $_REQUEST['rpost'] = NULL;
 
-echo "eval update form if\n";
 if ($_REQUEST['rpost'] && $phone) {
-    echo "in update form if\n";
     $handle = $_REQUEST['handle'];
     $option2 = $_REQUEST['option2']?1:0;
     $option3 = $_REQUEST['option3']?1:0;
@@ -39,9 +39,13 @@ if ($_REQUEST['rpost'] && $phone) {
     $txts = $_REQUEST['txts']?1:0;
 
     try {
-        $sql = $db->prepare("REPLACE INTO $table_name VALUES (verified = :verified, handle = :handle,
-                            $option2_column = :option2, phone = :phone, $option3_column = :option3, online = :online, txts = :txts);");
-        $sql->execute(array('verified' => "Y",
+        $sql = "REPLACE INTO $table_name 
+                    VALUES (verified = :verified, handle = :handle, 
+                            $option2_column = :option2, phone = :phone, 
+                            $option3_column = :option3, online = :online, 
+                            txts = :txts);";
+        $sth = $db->prepare($sql);
+        $sth->execute(array('verified' => "Y",
                             'handle' => $handle,
                             'option2' => $option2,
                             'phone' => $phone,
@@ -60,9 +64,7 @@ if ($_REQUEST['rpost'] && $phone) {
 # Log in
 if ( ! isset($_REQUEST['password']) )
     $_REQUEST['password'] = NULL;
-echo "eval log in if\n";
 if ($_REQUEST['password']) {
-    echo "in log in if\n";
     $password = $_REQUEST['password'];
     $phone = preg_replace('/\D+/', '', $_REQUEST['phone']);
     if (strlen($phone) != 10) {
@@ -70,14 +72,14 @@ if ($_REQUEST['password']) {
         $loggedin = 0;
     } elseif (strtolower($password) == $master_pass) {
         try {
-            $sql = $db->prepare("SELECT * FROM $table_name WHERE $phone = :phone");
-            $sql->execute(array('phone' => $phone));
+            $sth = $db->prepare("SELECT * FROM $table_name WHERE $phone = :phone");
+            $sth->execute(array('phone' => $phone));
         }
         catch (PDOException $e) {
             logAndDie("Failed to run query in #D103:" . $e->getMessage() . '->' .
                 (int)$e->getCode() . array('exception' => $e));
         }
-        $row = $sql->fetch(PDO::FETCH_ASSOC);                                   # fetch one row
+        $row = $sth->fetch(PDO::FETCH_ASSOC);                          # fetch one row into associative array (dictionary)
         setcookie ("phonelogin", $phone, time()+60*60*24*365*3, "/",
             $_SERVER['SERVER_NAME']);
         $loggedin = 1;
@@ -86,18 +88,17 @@ if ($_REQUEST['password']) {
     }
 }
 
-echo "eval phone & loggedin if\n";
 if ($phone && $loggedin) {
-    echo "in phone & loggedin if\n";
     try {
-        $sql = $db->prepare("select * from $table_name where $phone = :phone");
-        $sql->execute(array('phone' => $phone));
+        $sql = "select * from $table_name where $phone = :phone";
+        $sth = $db->prepare($sql);
+        $sth->execute(array('phone' => $phone));
     }
     catch (PDOException $e) {
-        logAndDie("Failed to run query in #D104:" . $e->getMessage() . '->' .
+        logAndDie("Failed to run query in #D104: " . $e->getMessage() .'->'.
             (int)$e->getCode() . array('exception' => $e));
     }
-    $row = $sql->fetch(PDO::FETCH_ASSOC);                                   # fetch one row
+    $row = $sth->fetch(PDO::FETCH_ASSOC);                              # fetch one row
     $loggedin = 1;
 }
 
