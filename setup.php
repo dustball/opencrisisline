@@ -12,7 +12,7 @@ if(!defined('STDIN')) {
 include 'config.php';
 
 try {
-    $sql = "select 2+2 as test";
+    $sql = "SELECT 2+2 AS test";
     $result = $db->query($sql);                                                 # $db := db handle set by included config.php
 }
 catch (PDOException $e) {                                                       # Couldn't connect to DBMS or particular database
@@ -28,7 +28,7 @@ while ($row = $result->fetch(PDO::FETCH_ASSOC)){
 }
 
 try {
-    $sql = "SELECT 1 as test FROM $table_name LIMIT 1";
+    $sql = "SELECT 1 AS test FROM $table_name LIMIT 1";
     $result = $db->query($sql);
 }
 catch (PDOException $e) {
@@ -60,13 +60,13 @@ catch (PDOException $e) {
 }
 
 try {
-    $sql = "SELECT 1 as test union SELECT 1 as test FROM $table_name LIMIT 1";
-    $result = $db->query($sql);
+    $sql = "SELECT 1 AS test UNION SELECT 1 AS test FROM $table_name LIMIT 1";
+    $sth = $db->query($sql);
 }
 catch (PDOException $e){
     die("#SE130: Failed Query ".'->'.$e->getMessage().'->'.(int)$e->getCode());
 }
-while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
     $test = $row['test'];
     if ($test == 1) {
         if (!$report_number) {
