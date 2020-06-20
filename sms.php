@@ -1,4 +1,4 @@
-<?
+<?php
 include 'config.php';
 
 if ($_REQUEST['AccountSid']!=$AccountSid) {

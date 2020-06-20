@@ -12,7 +12,7 @@
         
     # To run this script, first: update opencrisisline set verified=' ' where verified='Y';
     
-    $sql = "select * from $table_name where verified=' '";
+    $sql = "SELECT * FROM $table_name WHERE verified=' '";
        
     # Uncomment this line for testing purposes (only message the admin)
     #$sql = "select * from $table_name where handle='$admin_handle'";
@@ -33,7 +33,7 @@
         print ("\n");
         sms0($from,$to,$m1);
         sms0($from,$to,$m2);
-        $sql2 = "update $table_name set verified='?' where phone='".$row['phone']."'";
+        $sql2 = "UPDATE $table_name SET verified='?' WHERE phone='".$row['phone']."'";
         try {
             $result2 = $db->query($sql2);
         }

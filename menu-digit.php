@@ -40,7 +40,7 @@ echo '<Response>';
 try {
     $result = $db->query($sql);
 }
-catch (TwilioException $e) {
+catch (PDOException $e) {
     logAndDie('Failed Query #MD103: ' . $e->getMessage() . '->' . $e->getCode());
 }
 if ($result->fetchColumn() == 0) {                                              # row count per https://stackoverflow.com/questions/883365/row-count-with-pdo
@@ -54,5 +54,3 @@ else {
 }
 
 echo '</Response>';
-
-?>

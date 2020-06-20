@@ -1,4 +1,4 @@
-<?
+<?php
     include 'config.php';
     
     # menu-digit.php tells Twilio to call this script when the call ends

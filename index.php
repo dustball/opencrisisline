@@ -80,7 +80,8 @@ if ($password) {
         $loggedin = 0;
     } elseif (strtolower($password) == $master_pass) {
         try {
-            $sth = $db->prepare("SELECT * FROM $table_name WHERE $phone = :phone");
+            $sql = "SELECT * FROM $table_name WHERE $phone = :phone";
+            $sth = $db->prepare($sql);
             $sth->execute(array('phone' => $phone));
         }
         catch (PDOException $e) {
