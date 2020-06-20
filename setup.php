@@ -16,7 +16,7 @@ try {
     $result = $db->query($sql);                                                 # $db := db handle set by included config.php
 }
 catch (PDOException $e) {                                                       # Couldn't connect to DBMS or particular database
-    die("Failed Query #SE101: ".$e->getMessage().'->'.(int)$e->getCode());
+    die("Failed Query #SE101: ". $e->getMessage(). '->' .$e->getCode());
 }
 
 #   should be safe to fetch as errors should have been caught above -> no try/catch
@@ -33,8 +33,8 @@ try {
 }
 catch (PDOException $e) {
     # if error is something else than table does not exist
-    if ((int)$e->getCode() != 42) {
-        die("#SE120: Failed to query table $table_name ->" . $e->getMessage() . '->' . (int)$e->getCode());
+    if ($e->getCode() != 42) {
+        die("#SE120: Failed to query table $table_name ->" . $e->getMessage() . '->' .$e->getCode());
     }
     else {      # Table does not exist.  Create it.
         if (!$option2_column || !$option3_column) {                             # $option2_column & $option3_column defined in included config.php
@@ -54,7 +54,7 @@ catch (PDOException $e) {
             $response = $db->query($sql);
         }
         catch (PDOException $e) {
-            die("#SE130: Failed creating table $table_name: ".'->'.$e->getMessage().'->'.(int)$e->getCode());
+            die("#SE130: Failed creating table $table_name: ".'->'.$e->getMessage(). '->' .$e->getCode());
         }
     }
 }
@@ -64,7 +64,7 @@ try {
     $sth = $db->query($sql);
 }
 catch (PDOException $e){
-    die("#SE130: Failed Query ".'->'.$e->getMessage().'->'.(int)$e->getCode());
+    die("#SE130: Failed Query ".'->'.$e->getMessage().'->'.$e->getCode());
 }
 while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
     $test = $row['test'];

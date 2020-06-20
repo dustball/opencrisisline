@@ -62,7 +62,7 @@ if ($_REQUEST['rpost'] && $phone) {
         $sth->execute($values);
     }
     catch (PDOException $e) {
-        logAndDie("Failed to run query in #D102:".$e->getMessage().'->'.(int)$e->getCode().array('exception' => $e));
+        logAndDie("Failed to run query in #D102:".$e->getMessage().'->'.$e->getCode());
     }
     # Assume logged in if they made it this far
     $loggedin = 1;
@@ -84,8 +84,7 @@ if ($password) {
             $sth->execute(array('phone' => $phone));
         }
         catch (PDOException $e) {
-            logAndDie("Failed to run query in #D103:" . $e->getMessage() . '->' .
-                (int)$e->getCode() . array('exception' => $e));
+            logAndDie("Failed to run query in #D103:" . $e->getMessage() .'->'. $e->getCode());
         }
         $row = $sth->fetch(PDO::FETCH_ASSOC);                          # fetch one row into associative array (dictionary)
         setcookie ("phonelogin", $phone, time()+60*60*24*365*3, "/",
@@ -104,8 +103,7 @@ if ($phone && $loggedin) {
         $sth->execute(array('phone' => $phone));
     }
     catch (PDOException $e) {
-        logAndDie("Failed to run query in #D104: " . $e->getMessage() .'->'.
-            (int)$e->getCode() . array('exception' => $e));
+        logAndDie("Failed to run query in #D104: " . $e->getMessage() .'->'. $e->getCode());
     }
     $row = $sth->fetch(PDO::FETCH_ASSOC);                              # fetch one row
     $loggedin = 1;
@@ -252,7 +250,7 @@ else {            # loggedin and/or phone is false -> start login screen (phone 
         '<br>'.
         '<h3 style="cursor:pointer">Login</h3>'.
         '<dd>'.
-        '<p style="...">';
+        '<p style="...">'.
         "<p>";
     if (isset($error))
         echo "$error";

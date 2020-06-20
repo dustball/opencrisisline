@@ -41,7 +41,7 @@ try {
     $result = $db->query($sql);
 }
 catch (TwilioException $e) {
-    logAndDie('Failed Query #MD103: ' . $e->getMessage() . '->' . (int)$e->getCode());
+    logAndDie('Failed Query #MD103: ' . $e->getMessage() . '->' . $e->getCode());
 }
 if ($result->fetchColumn() == 0) {                                              # row count per https://stackoverflow.com/questions/883365/row-count-with-pdo
     echo '<Say>Sorry, a '.$volunteer.' could not be located right now.  Please try again later.</Say>';

@@ -22,8 +22,7 @@ if ($body=="YES") {
         $result = $db->query($sql);
     }
     catch (PDOException $e) {
-        logAndDie("Failed Query #SM103: ".$e->getMessage().'->'.
-            (int)$e->getCode().array('exception' => $e));
+        logAndDie("Failed Query #SM103: ".$e->getMessage(). '->' .$e->getCode());
     }
     print "<Sms>Thank you for verifying your number!  We're all set now.  Thank you for helping.</Sms>";
     print "<Sms>(BONUS TIP: Add this phone number to your contacts as '$system_name' so you recognize a call for help.)</Sms>";
@@ -33,8 +32,7 @@ if ($body=="YES") {
         $result = $db->query($sql);
     }
     catch (PDOException $e) {
-        logAndDie("Failed Query #SM104: ".$e->getMessage().'->'.
-            (int)$e->getCode().array('exception' => $e));
+        logAndDie("Failed Query #SM104: ".$e->getMessage().'->'.$e->getCode());
     }
     print "<Sms>Your number has been removed from the system.  No further action needed.</Sms>";
 } elseif ($body=="HELP") {

@@ -1,4 +1,4 @@
-<?
+<?php
 
     include 'config.php';
 
@@ -21,8 +21,7 @@
         $result = $db->query($sql);
     }
     catch (PDOException $e) {
-        logAndDie("Failed Query #V103: " . $e->getMessage() .'->'.
-            (int)$e->getCode() . array('exception' => $e));
+        logAndDie("Failed Query #V103: " . $e->getMessage() .'->'. $e->getCode());
     }
 
     while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
@@ -39,11 +38,7 @@
             $result2 = $db->query($sql2);
         }
         catch (PDOException $e) {
-            logAndDie("Failed Query #V104: " . $e->getMessage() .'->'.
-                (int)$e->getCode() . array('exception' => $e));
+            logAndDie("Failed Query #V104: " . $e->getMessage() .'->'. $e->getCode());
         }
         sleep(1);
     }
-    
-    
-?>
