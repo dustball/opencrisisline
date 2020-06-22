@@ -1,7 +1,7 @@
 <?php
 include 'config.php';
 
-if ($_REQUEST['AccountSid']!=$AccountSid) {
+if (isset($_REQUEST['AccountSid']) && $_REQUEST['AccountSid'] != $AccountSid) { # isset "protects" $_REQUEST['AccountSid'] reference
     # Make sure it's Twilio at the other end
     die("Access denied");
 }

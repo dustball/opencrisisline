@@ -2,7 +2,14 @@
 
     include 'config.php';
 
-    # Run this once a year to confirm they still opt-in and -- haven't changed numbers etc. 
+    echo "Run this once a year to confirm they still opt-in and -- haven't changed numbers etc.\n";
+    echo "\n";
+    echo "Before running this script, run the query\n";
+    echo "\tUPDATE opencrisisline SET verified=' ' WHERE verified='Y'\n";
+    echo "Perhaps from MySQL Workbench or phyMyAdmin.\n";
+    echo "\n";
+    echo 'If this query is run from MySQL WorkBench, "Safe Update" must be turned off'."\n";
+    echo '(Edit->Preferences->SQL Editor (scroll to bottom)->Clear "Safe Updates" and then reconnect'."\n";
     
     if(!defined('STDIN')) {
         die("Please run this from the command-line only.");
@@ -18,13 +25,13 @@
     #$sql = "select * from $table_name where handle='$admin_handle'";
 
     try {
-        $result = $db->query($sql);
+        $rows = $db->query($sql)->fetchAll();                                   # hey memory is cheap, fetch all at once
     }
     catch (PDOException $e) {
         logAndDie("Failed Query #V103: " . $e->getMessage() .'->'. $e->getCode());
     }
 
-    while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+    foreach ($rows as $row) {
         $name = trim(ucfirst($row['handle']));
         $to = '+1' . $row['phone'];
         $m1 = "$name, thank you for volunteering with the $system_name system!  This is a yearly check to see if we still have (1/2)";
