@@ -38,17 +38,18 @@ if($_REQUEST['Digits'] == '1') {
 echo '<Response>';
 
 try {
-    $result = $db->query($sql);
+    $rows = $db->query($sql)->fetchAll();
 }
 catch (PDOException $e) {
     logAndDie('Failed Query #MD103: ' . $e->getMessage() . '->' . $e->getCode());
 }
-if ($result->fetchColumn() == 0) {                                              # row count per https://stackoverflow.com/questions/883365/row-count-with-pdo
+
+if (count($rows) == 0) {
     echo '<Say>Sorry, a '.$volunteer.' could not be located right now.  Please try again later.</Say>';
 }
 else {
-    while ($row = $result->fetch(PDO::FETCH_ASSOC)) {                               # fetch a row at a time
-        print "<Dial callerId='$help_line_number' action='called.php?dialed=".$row['phone']."'>".$row['phone']."</Dial>";
+    foreach ($rows as $row) {
+        print "<Dial callerId='$help_line_number' action='called.php?dialed=".$row['phone']."'>".$row['phone']."</Dial>";       # must break loop
     }
     echo '<Say>The call failed or the remote party hung up. Goodbye.</Say>';
 }
