@@ -1,0 +1,123 @@
+<?php
+# is INCLUDED in many (all?) of the OpenCrisisOnline pages
+# opens databases as well as other functions
+# defines db as the database handle
+
+# Help line config
+$anonymous = FALSE;                  # Setting to FALSE will inform both caller and volunteer who they talked to
+#TODO:: assign $help_line_number the phone number assigned by Twilio, e.g., "+12025551212"
+$help_line_number = "";  # Must include prefix of +1 followed by phone number, no spaces or other characters
+#TODO:: assign $friendly_phone with a more human friendly version of the phone number, e.g., "(202) 555-1212"
+$friendly_phone = "";  # Human friendly version of the above number
+#TODO:: assign $system_name a human friendly name, e.g., "Our Help Line"
+$system_name = "Our Help Line";      # The name for your help line
+#TODO:: assign $logo the name of the image file to be shown on the registration page, e.g., "ocl-logo.png"
+$logo = "ocl-logo.png";              # URL to logo (relative or absolute OK)
+#TODO:: assign $volunteer what a volunteer should be called, e.g., "volunteer"
+$volunteer = "volunteer";            # What do you call volunteers?
+#TODO:: assign $master_pass the password to be used by volunteers registering phone numbers and duties, e.g., "ABadPassword666?"
+$master_pass = "";            # See documentation (this password may show up as *'s depending on your text editor)
+#TODO:: assign $people_to_call how many people will be called when someone calls in asking for help, e.g., 6
+$people_to_call = 6;                 # How many people to call at once
+
+# Admin config
+#TODO:: assign $admin_email the administrator's email address to be notified of runtime issues, e.g., "adminperson@helpline.com"
+$admin_email = "";
+#TODO:: assign $admin_phone the administrator's phone number that volunteers may contact for help (sms.php)
+$admin_phone = "";
+#TODO:: assign $admin_handle the user name for the OpenCrisisLine administrator, e.g., "adminperson"
+$admin_handle = "";
+#TODO:: assign $report_number the telephone number to receive status texts, e.g., "+13135551212"
+$report_number = "";     # Optional - report all successful calls to this number, set to NULL to disable
+
+# Twilio config
+$ApiVersion = "2010-04-01";                          # Do not change
+#TODO:: assign $AccountSid, ~20 character string from https://www.twilio.com/console
+$AccountSid = "";                             # ***NOT*** phone number, get from https://www.twilio.com/console
+#TODO:: assign $AuthToken, ~20 character string from https://www.twilio.com/console, Twilio's equivalent of a password
+$AuthToken = "";                                # Get from https://www.twilio.com/console
+
+# Database config
+#TODO:: assign $db_host the address of the database, e.g., localhost, IP address, fully qualified domain name
+$db_host = "";
+#TODO:: assign $db_name the name of the database containing volunteer phone numbers and handles, e.g., "ocl_db"
+$db_name = "";
+#TODO:: assign $db_user an authorized user of the above database, e.g., "adminperson"
+$db_user = "";
+#TODO:: assign $db_pass the password for $db_user to access the $db_name database, e.g., "AwfulPassword2!"
+$db_pass = "";
+#TODO:: assign $db_charset the character set used in the $db_name database, e.g., "utf8mb4";
+$db_charset = "";
+#TODO:: assign $table_name the table to maintain the volunteers' phone number, handle, and responsibilities
+$table_name = "";
+
+# Additional menu items, comment out or set to NULL to disable them
+#TODO:: assign $option2_column the column name for a second volunteer responsibility, e.g., "opt2"
+$option2_column = "opt2";
+#TODO:: assign $option2_friendly name for $option2_column that is used for volunteer responsibilities registration and in the caller's menu
+$option2_friendly = "Code Red";
+#TODO:: assign $option2_column the column name for a third volunteer responsibility, e.g., "opt3"
+$option3_column = "opt3";
+#TODO:: assign $option3_friendly name for $option3_column that is used for volunteer responsibilities registration and in the caller's menu
+#TODO:: $option3_friendly must contain the word "Graveyard" for graveyard calling (call less people) to be enacted
+$option3_friendly = "Graveyard / Night Shift";
+
+require "twilio.php";
+
+function logError($err) {
+    global $system_name, $admin_email;
+#TODO::    mail($admin_email,"[$system_name] Error","http://".$_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"]."\n\n".print_r($_REQUEST,true)."\n\n\n".print_r($err,true));
+    echo($admin_email." [$system_name] Error http://".$_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"]."\n\n".print_r($_REQUEST,true)."\n\n\n".print_r($err,true));
+}
+
+function logAndDie($err) {
+    logError($err."\n");
+    die($err."\n");
+}
+
+function get_db() {
+    global $db_host, $db_name, $db_charset;                             # sets up $sdn, assigned in "# Database config" above
+    global $db_user, $db_pass;                                          # sets up $dbh, assigned in "# Database config" above
+    $dsn = "mysql:host=$db_host;dbname=$db_name;charset=$db_charset";                                                   # dsn := data source name
+    $options = [
+        PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES   => false,
+    ];
+
+    # try accessing the DBMS and then the database
+    try {
+        $dbh = new PDO($dsn, $db_user, $db_pass, $options);                                                             # dsn contains db_name. Replaces mysql_connect & mysql_select_db
+        }
+    catch (PDOException $e) {                                                                                           # Couldn't connect to DBMS or particular database
+        logAndDie('Could not connect #C301: ->'. $e->getMessage(). '->' .$e->getCode());
+        }
+
+    # make PhpStorm happy that $pdo is always defined.
+    if (!isset($dbh))
+        $dbh = NULL;            # will never execute as if undefined, it is caught immediately above
+
+    return $dbh;
+}
+
+$db = get_db();
+
+function sms0($from,$to,$sms) {
+    global $ApiVersion, $AccountSid, $AuthToken;
+    
+    $client = new TwilioRestClient($AccountSid, $AuthToken);
+    $data = array(
+        "From" => $from,
+        "To" => $to,
+        "Body" => $sms
+    );
+
+    try {
+        $client->request("/$ApiVersion/Accounts/$AccountSid/SMS/Messages","POST",$data);
+    }
+    catch (TwilioException $e) {
+        logAndDie('Twilio Exception #C302: '.$e->getMessage(). '->' .$e->getCode());
+    }
+
+    return;
+}
