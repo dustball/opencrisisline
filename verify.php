@@ -2,6 +2,9 @@
 
     include 'config.php';
 
+    if ( ! defined('STDIN')) {
+        die("Please run this from the command-line only.");
+}
     echo "Run this once a year to confirm they still opt-in and -- haven't changed numbers etc.\n";
     echo "\n";
     echo "Before running this script, run the query\n";
@@ -10,10 +13,6 @@
     echo "\n";
     echo 'If this query is run from MySQL WorkBench, "Safe Update" must be turned off'."\n";
     echo '(Edit->Preferences->SQL Editor (scroll to bottom)->Clear "Safe Updates" and then reconnect'."\n";
-    
-    if(!defined('STDIN')) {
-        die("Please run this from the command-line only.");
-    }
 
     $from = $help_line_number;
         

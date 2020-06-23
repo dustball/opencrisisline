@@ -1,6 +1,6 @@
 <?php
 
-//TODO:: uncomment index.php:HTTPS
+//TODO:: may want to keep commented out for development purposes, probably want to uncomment the code for production
 //if (empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] === "off") {
 //    $location = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 //    header('HTTP/1.1 301 Moved Permanently');
