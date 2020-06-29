@@ -2,6 +2,5 @@
 .DS_Store
 *.bak
 *.txt
-/config.php
-/scratch.php
 config.php
+./idea

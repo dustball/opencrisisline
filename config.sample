@@ -66,8 +66,9 @@ require "twilio.php";
 
 function logError($err) {
     global $system_name, $admin_email;
-#TODO::    mail($admin_email,"[$system_name] Error","http://".$_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"]."\n\n".print_r($_REQUEST,true)."\n\n\n".print_r($err,true));
-    echo($admin_email." [$system_name] Error http://".$_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"]."\n\n".print_r($_REQUEST,true)."\n\n\n".print_r($err,true));
+    mail($admin_email, 
+        "[$system_name] Error", 
+        "http://".$_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"]. "\n\n". print_r($_REQUEST,true). "\n\n\n" .print_r($err,true));
 }
 
 function logAndDie($err) {

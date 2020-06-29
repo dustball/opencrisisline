@@ -1,12 +1,12 @@
 <?php
 
-//TODO:: may want to keep commented out for development purposes, probably want to uncomment the code for production
-//if (empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] === "off") {
-//    $location = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-//    header('HTTP/1.1 301 Moved Permanently');
-//    header('Location: ' . $location);
-//    exit;
-//}
+# May want to comment out for development purposes
+if (empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] === "off") {
+    $location = 'https:' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+    header('HTTP/1.1 301 Moved Permanently');
+    header('Location: ' . $location);
+    exit;
+}
 
 header('Cache-Control: no-cache, must-revalidate');                             # *this* instance to be cached anew
 header('Expires: Mon, 01 Nov 2016 05:00:00 GMT');                               # date in past forces *this* instance to be cached anew
