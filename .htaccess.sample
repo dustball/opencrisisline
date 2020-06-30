@@ -1,5 +1,0 @@
-RewriteEngine on
-
-AddHandler fcgid-script .php
-FCGIWrapper "PATHTOPHP/local/bin/php-cgi" .php
-

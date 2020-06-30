@@ -12,7 +12,7 @@ A paid Twilio account is required (see Installation:Twilio setup notes below).
 
 This software creates a help line in the cloud which can be called by anybody that knows the number.  The current version is intended to be used by medium-to-large sized groups and organizations to support themselves, as opposed to a public help line which may have different needs.
 
-With just a web hosting account supporting PHP (shown to work with PHP 7.x and  and is believed to run but has not been shown to run in PHP PHP 5.6) and MySQL and paid Twilio account (see Installation:Twilio setup notes below), you can launch a crisis line in an area code (and possibly number) of your choosing. Twilio costs $1 per month (for the phone number) plus 2 cents per minute (counting both legs of the connection). 
+With just a web hosting account supporting PHP (shown to work with PHP 7.x - tested OK with 7.5 and 7.7) and MySQL and paid Twilio account (see Installation:Twilio setup notes below), you can launch a crisis line in an area code (and possibly number) of your choosing. Twilio costs $1 per month (for the phone number) plus 2 cents per minute (counting both legs of the connection). 
 
 Once installation (see below) is finished, the administrator should invite volunteers to sign up.  They sign themselves up with their phone number and a master password, specify their handle and pick which phone pools to opt-in to. (Unchecking all the options essentially puts their number on 'hold', which allows volunteers to mark themselves away for vacations or other reasons.)  
 
@@ -29,11 +29,11 @@ Notice: this project was just uploaded to GitHub - please allow a few days for t
 ## Installation
 
 1. Shown to run on Mint and Amazon AMI systems and assumed to run on other other Linux systems. Not tested on macOS or Windows
-1. Assure that PHP either 5.6 or 7.x is working on your web host (see below for Dreamhost specifics)
+1. Assure that PHP 7.x is working on your web host
 1. Known to work against MySQL 5.7.28
-2. `cp config.sample config.php` and edit
-3. `php setup.php` to test setup and create database schema 
-4. Go to the web page -- i.e. open `index.php` with your browser -- and sign up yourself with a handle matching `$admin_handle` in the config
+1. `cp config.sample config.php` and edit
+1. `php setup.php` to test setup and create database schema 
+1. Go to the web page -- i.e. open `index.php` with your browser -- and sign up yourself with a handle matching `$admin_handle` in the config
 
 Twilio setup:
 
@@ -52,40 +52,4 @@ How to test:
 5. Optional: answer and talk for more than 15 seconds to trigger the 'call end' code
 
 In case of error, check Twilio's [error logs](https://www.twilio.com/console/debugger) as well as the web access logs (`tail -f ~/logs/*/https/error.log` on DH).
-
-### Dreamhost PHP 5.6.40 Installation
-
-Open Crisis Line can be installed anywhere, but custom installation instructions to install **PHP 5.6.40** for Dreamhost are provided as a convienence below.
-
-1. Log into Dreamhost control panel
-2. Domains -> Manage Domains -> "Add hosting" button.  Fill out the top form called "Fully Hosted". Create a new user for the site, doesn't matter what PHP mode you choose since we will make our own below.  Make note of the password on the resulting page.
-3. Domains -> SSL -> "Add" button next to host/domain you just created -> Let's Encrypt (Free) -> "Select" button
-4. FTP & SSH Users -> Manage Users -> choose newly created user -> Show Info -> Edit Access -> change protocol to SSH ON / Secure connection (FTP disabled)
-5. More -> MySQL Databases -> Create new.  Fill out the form, creating a new hostname and a new database user.  Make note of the password.
-6. SSH into the account created in step #2 and enter the following commands one line at a time:
-
-```Shell
-wget "https://curl.haxx.se/download/curl-7.70.0.tar.gz"
-tar -zxvf curl-7.70.0.tar.gz && rm curl-7.70.0.tar.gz  && cd curl-7.70.0
-./configure --prefix=$HOME/curl # 5 minutes
-make                            # 4 minutes
-make install
-cd ~
-wget "https://www.php.net/distributions/php-5.6.40.tar.gz"
-tar -zxvf php-5.6.40.tar.gz &&  rm php-5.6.40.tar.gz &&  cd php-5.6.40
-./configure --prefix=/home/`whoami`/local --with-zend-vm=GOTO --enable-cgi --enable-fpm --enable-libxml --enable-bcmath --enable-calendar= --enable-ctype --enable-dom --enable-exif --enable-fileinfo --enable-filter --enable-ftp --enable-hash --enable-intl --enable-json --enable-mbstring --enable-mbregex --enable-mbregex-backtrack --enable-opcache --enable-pcntl --enable-pdo --enable-phar --enable-posix --enable-session --enable-shmop --enable-simplexml --enable-soap --enable-sockets --enable-sysvmsg --enable-sysvsem --enable-sysvshm --enable-tokenizer --enable-wddx --enable-xml --enable-xmlreader --enable-xmlwriter --enable-zip --with-pcre-regex --with-sqlite3 --with-zlib --with-bz2 --with-kerberos --with-gd --with-jpeg-dir=/usr --with-png-dir=/usr --with-zlib-dir=/usr --with-freetype-dir=/usr --with-gettext --with-mhash --with-iconv --with-mysql --with-mysql-sock=/No-MySQL-hostname-was-specified --with-mysqli --enable-mysqlnd --with-pdo-mysql --with-pdo-sqlite --with-readline  --with-curl=/home/`whoami`/curl # 2 minutes
-make; echo "Done compiling" | mail you@youremail.com # This will take ~25 minutes
-make install
-cd ~ && export PATH=$HOME/local/bin:$PATH
-echo "export PATH=$HOME/local/bin:\$PATH" >> ~/.bash_profile && . ~/.bash_profile
-cd *.com  # go into your web directory (this command assumes your domain ends in .com)
-git clone https://github.com/dustball/opencrisisline.git  # Change this to YOUR copy of opencrisisline if you forked it on Github
-cd opencrisisline
-sed "s|PATHTOPHP|${HOME}|" .htaccess.sample > .htaccess
-cp config.sample config.php 
-pico config.php # edit ...
-php setup.php
-```
-    
-7. You should see a "All tests OK" message.
 
