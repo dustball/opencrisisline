@@ -1,72 +1,121 @@
 <?php
 
+# May want to comment out for development purposes
 if (empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] === "off") {
-    $location = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+    $location = 'https:' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     header('HTTP/1.1 301 Moved Permanently');
     header('Location: ' . $location);
     exit;
 }
 
-header('Cache-Control: no-cache, must-revalidate');
-header('Expires: Mon, 01 Nov 2016 05:00:00 GMT');
+header('Cache-Control: no-cache, must-revalidate');                             # *this* instance to be cached anew
+header('Expires: Mon, 01 Nov 2016 05:00:00 GMT');                               # date in past forces *this* instance to be cached anew
 
-include "config.php";
+# among other things, open the database and assign to $db
+require_once "config.php";
 
-$sql = "SELECT 1 as test FROM $table_name LIMIT 1";       
-$result = mysql_query($sql);
-if (!$result) {
-    print ("Please run setup.php first.");
+$sql = "SELECT 1 AS test FROM $table_name LIMIT 1";
+if ( !$db->query($sql) ) {
+    echo "Please run setup.php first.";
     exit;
 }
 
-
 $loggedin = 0;
 
-$phone = $_COOKIE['phonelogin'];
-
 # Update form
+if (isset($_COOKIE['phonelogin']))
+    $phone = $_COOKIE['phonelogin'];
+else
+    $phone = NULL;
+
+if ( ! isset($_REQUEST['rpost']) )
+    $_REQUEST['rpost'] = NULL;
+
+function processREQUEST($index) {
+    if (isset($_REQUEST[$index]))
+        $retval = 1;
+    else
+        $retval = 0;
+    return $retval;
+}
+
 if ($_REQUEST['rpost'] && $phone) {
     $handle = $_REQUEST['handle'];
-    $option2 = $_REQUEST['option2']?1:0;
-    $option3 = $_REQUEST['option3']?1:0;
-    $online = $_REQUEST['online']?1:0;
-    $txts = $_REQUEST['txts']?1:0;
-    $sql = "replace into $table_name (verified,handle,$option2_column,phone,$option3_column,online,txts) values ('Y','".mysql_real_escape_string($handle)."','".mysql_real_escape_string($option2)."','".mysql_real_escape_string($phone)."','".mysql_real_escape_string($option3)."','".mysql_real_escape_string($online)."','".mysql_real_escape_string($txts)."')";
-    $result = mysql_query($sql) or logAndDie("Failed Query #D102: ".mysql_error());
+    $option2 = processREQUEST('option2');
+    $option3 = processREQUEST('option3');
+    $online = processREQUEST('online');
+    $txts = processREQUEST('txts');
+
+    try {  # make a prepared statement which also addresses escaping strings issues
+        $sql = "REPLACE INTO $table_name".              # delete record with phone primary key and then insert these values
+            " (verified, handle, $option2_column, phone, $option3_column, online, txts) ".
+            " VALUES (:verified, :handle, :option2, :phone, :option3, :online, :txts)";
+        $sth = $db->prepare($sql);
+        $values = array(
+            ':verified' => "Y",
+            ':handle' => $handle,
+            ':option2' => $option2,
+            ':phone' => $phone,
+            ':option3' => $option3,
+            ':online' => $online,
+            ':txts' => $txts);
+        $sth->execute($values);
+    }
+    catch (PDOException $e) {
+        logAndDie("Failed to run query in #D102:".$e->getMessage().'->'.$e->getCode());
+    }
     # Assume logged in if they made it this far
     $loggedin = 1;
     $error = "[OK - Information Saved]";
 }
 
 # Log in
-if ($_REQUEST['password']) {
-    $password = $_REQUEST['password'];
-    $phone = preg_replace('/\D+/', '', $_REQUEST['phone']);
-    if (strlen($phone)!=10) {
+if ( ! isset($_REQUEST['password']) )
+    $_REQUEST['password'] = NULL;
+$password = $_REQUEST['password'];
+if ($password) {
+    $phone = preg_replace('/\D+/', '', $_REQUEST['phone']);     # replace all non-digits with nothing
+    if (strlen($phone) != 10) {
         $error = "Phone must be 10 digits exactly";
         $loggedin = 0;
-    } elseif (strtolower($password)==$master_pass) {
-        $sql = "select * from $table_name where phone='".mysql_real_escape_string($phone)."'";
-        $result = mysql_query($sql) or logAndDie("Failed Query #D103: ".mysql_error());
-        $row = mysql_fetch_assoc($result);
-        setcookie ("phonelogin", $phone, time()+60*60*24*365*3, "/", $_SERVER['SERVER_NAME']);    
+    } elseif (strtolower($password) == $master_pass) {
+        try {
+            $sql = "SELECT * FROM $table_name WHERE $phone = :phone";
+            $sth = $db->prepare($sql);
+            $sth->execute(array('phone' => $phone));
+        }
+        catch (PDOException $e) {
+            logAndDie("Failed to run query in #D103:" . $e->getMessage() .'->'. $e->getCode());
+        }
+        $row = $sth->fetch(PDO::FETCH_ASSOC);                          # fetch one row into associative array (dictionary)
+        setcookie ("phonelogin", $phone, time()+60*60*24*365*3, "/",
+            $_SERVER['SERVER_NAME']);
         $loggedin = 1;
     } else {
         $error = "Invalid login";
     }
 }
 
+#if 10 digit phone number and correct password entered
 if ($phone && $loggedin) {
-    $sql = "select * from $table_name where phone='".mysql_real_escape_string($phone)."'";
-    $result = mysql_query($sql) or logAndDie("Failed Query #D104: ".mysql_error());
-    $row = mysql_fetch_assoc($result);
+    try {
+        $sql = "SELECT * FROM $table_name WHERE phone = :phone";
+        $sth = $db->prepare($sql);
+        $sth->execute(array('phone' => $phone));
+    }
+    catch (PDOException $e) {
+        logAndDie("Failed to run query in #D104: " . $e->getMessage() .'->'. $e->getCode());
+    }
+    $row = $sth->fetch(PDO::FETCH_ASSOC);                              # fetch one row
     $loggedin = 1;
 }
 
-?><!doctype html>
+?>
+
+<!doctype html>
 <html lang="en">
 <head>
-<title><? echo $system_name; ?></title>
+<title><?php echo $system_name; ?></title>
 <meta charset="utf-8">
 <link href="/jquery/jquery-ui.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Droid+Sans" rel="stylesheet">
@@ -76,14 +125,17 @@ if ($phone && $loggedin) {
 html, body {margin:0; padding:0; color:#ccc; font-family: 'Droid Sans', sans-serif; }
 html {background:#CED4F3}
 body {font-size:13pt; line-height:180%; }
-.container {background:#333; width:100%; margin-top:21%; padding:0 15% 3em 0; -webkit-box-shadow: 0px 0px 33px 7px rgba(0,0,0,.8); box-shadow: 0px 0px 33px 7px rgba(0,0,0,.8);
--moz-box-shadow: 0px 0px 33px 7px rgba(82,82,82,0.6);
+.container {background:#333; width:100%; margin-top:21%; padding:0 15% 3em 0;
+    -webkit-box-shadow: 0px 0px 33px 7px rgba(0,0,0,.8);
+    box-shadow: 0px 0px 33px 7px rgba(0,0,0,.8);
+    -moz-box-shadow: 0px 0px 33px 7px rgba(82,82,82,0.6);
 box-shadow: 0px 0px 33px 7px rgba(82,82,82,0.6);}
 .inner {margin: 0 10%}
 
 h1 {padding-top:1.5em}
 
-.box {margin-top:3em; margin-left:1.5em; margin-right:3.5em; padding-left:1.25em; display:inline-block; border-left:1px dotted #666; vertical-align:top}
+.box {margin-top:3em; margin-left:1.5em; margin-right:3.5em; padding-left:1.25em; display:inline-block; border-left:1px
+    dotted #666; vertical-align:top}
 .header {text-decoration:underline;}
 ul {padding-left:0}
 li {list-style-type: none}
@@ -111,62 +163,124 @@ a {color:inherit; text-decoration:none}
 <div class="container">
 <div class="inner">
 
-<h1><img src="<? echo $logo; ?>" width=128 align=absmiddle> &nbsp;<? echo $system_name; ?></h1>
+<h1><img src="<?php echo $logo; ?>" width=128 align=absmiddle> &nbsp;<?php echo $system_name; ?></h1>
 
-<? if ($loggedin && $phone) { ?>
-<p><code><? echo $friendly_phone; ?> -> <? echo $phone; ?></code></p>
+<?php
+if ($loggedin && $phone) {          # phone := 10 digit phone number
+    echo
+        "<p><code>".$friendly_phone. "->" .$phone."</code></p>".
+        "<br>".
+        "<dd>".
+        '<p style="color:yellow">';
+    if (isset($error))
+        echo $error;
+echo<<<STOP_ECHO
+        </p>
+        <form method=post>
+            <input type=hidden name=rpost value=rpost>
+            <table cellspacing=5>
+                <tr><td align="right">Volunteer Handle:</td>
+                    <td>&nbsp;</td>
+                    <td><nobr><input type=text name="handle" id="handle" onkeyup="" onblur="" maxlength=40 class="ui-corner-all ui-widget" value='
+STOP_ECHO;
+                    if (isset($row['handle']))
+                        echo htmlspecialchars($row['handle'],ENT_QUOTES);
+                    echo "'>";                                                       # closes off the value single quote
+echo<<<STOP_ECHO
+                    <span id="len"> &nbsp; </span></nobr></td></tr>
+                <tr><td align="right">General Phone Pool</td>
+                    <td>&nbsp;</td>
+                    <td><input 
+STOP_ECHO;
 
-<br>
-    <dd>
-    <p style="color:yellow"><? echo $error; ?></p>
-    <form method=post>
-    <input type=hidden name=rpost value=rpost>
-    <table cellspacing=5>
-      <tr><td align=right>Volunteer Handle:</td><td>&nbsp;</td><td><nobr><input type=text name="handle" id="handle" name="handle" onkeyup="" onblur="" maxlength=40 id="fm" class=" ui-corner-all ui-widget" value='<? echo htmlspecialchars($row['handle'],ENT_QUOTES); ?>'> <span id="len">&nbsp;</span></nobr></td></tr>
-      <tr><td align=right>General Phone Pool</td><td>&nbsp;</td><td><input <? if ($row['online']) {echo "checked=checked";} ?> type="checkbox" name="online" value="online"></td></tr>      
-      <? if ($option2_friendly) { ?>
-      <tr><td align=right><? echo $option2_friendly; ?></td><td>&nbsp;</td><td><input <? if ($row[$option2_column]) {echo "checked=checked";} ?> type="checkbox" name="option2" value="option2"></td></tr>
-      <? } ?>
-      <? if ($option3_friendly) { ?>
-      <tr><td align=right><? echo $option3_friendly; ?></td><td>&nbsp;</td><td><input <? if ($row[$option3_column]) {echo "checked=checked";} ?> type="checkbox" name="option3" value="option3"></td></tr>
-      <? } ?>
-      <tr style="display:none"><td align=right>TXT messages</td><td>&nbsp;</td><td><input <? if ($row['txts']) {echo "checked=checked";} ?> type="checkbox" name="txts" value="txts"></td></tr> 
-      <tr><td align=right>&nbsp;</td><td>&nbsp;</td><td><button  style="margin-top:.5em" onclick="this.form.submit();" class="ui-button ui-corner-all ui-widget">Save</button></td></tr>
-    </table>
-    </dd>
-<br>
-<p>Instructions:</p>
-<p>Enter your volunteer handle and sign-up for whichever lists are appropriate.  Most people should join the General Pool. 
+    if (isset($row['online']) && $row['online'])                                # isset($row['online']) protects $row['online']
+        echo "checked=checked ";
+    echo 'type="checkbox" name="online" value="online"></td></tr>'."\n";
 
-<? if (strpos($option3_friendly,"Graveyard")!==FALSE) { 
-    print "If you don't mind phone calls at night, also click $option3_friendly.";
-}?>
+    if ($option2_friendly) {
+        echo
+            '<tr><td align="right">' . $option2_friendly . '</td>' .
+            '<td>&nbsp;</td>' .
+            '<td><input ';
+        if (isset($row[$option2_column]) && $row[$option2_column])              # isset($row[$option2_column]) protects $row[$option2_column]
+            echo " checked=checked ";
+        echo 'type="checkbox" name="option2" value="option2"></td></tr>'."\n";
+    }
 
-E-mail <? echo $admin_email; ?> for help.</p>
+    if ($option3_friendly) {
+        echo 
+            '<tr><td align="right">' . $option3_friendly . '</td>' .
+            "<td>&nbsp;</td>".
+            "<td><input ";
+        if (isset($row[$option3_column]) && $row[$option3_column])              # isset($row[$option3_column]) protects $row[$option3_column]
+            echo "checked=checked ";
+        echo 'type="checkbox" name="option3" value="option3"></td></tr>'."\n";
+    }
 
-<p>To quit, just uncheck the boxes and hit save.  To change phone numbers, uncheck the boxes and login with a new phone number or contact the admin.</p>
+    echo
+        '<tr style="display:none">'.
+            '<td align="right">TXT messages</td>'.
+            '<td>&nbsp;</td>'.
+            '<td><input ';
+    if ($row['txts'])
+        echo 'checked=checked';
+    echo
+        ' type="checkbox" name="txts" value="txts"></td></tr>'."\n".
+        '<tr>'.
+            '<td align=right>&nbsp;</td>'.
+            '<td>&nbsp;</td>'.
+            '<td><button  style="margin-top:.5em" onclick="this.form.submit();" class="ui-button ui-corner-all ui-widget">Save</button></td></tr>';
+    echo
+        "</table>\n".
+        "</dd>\n".
+        "<br>\n".
+        "<p>Instructions:</p>\n".
+        "<p>Enter your volunteer handle and sign-up for whichever lists are appropriate.  Most people should join the General Pool.</p>\n";
 
-<? } else { ?>
+    if (strpos($option3_friendly,"Graveyard") !== FALSE)
+        echo "If you don't mind phone calls at night, also click $option3_friendly.";
 
-<br>
-  <h3 style="cursor:pointer">Login</h3>
-    
-    <dd>
-    <p style="color:red"><? echo $error; ?></p>
-    <form method=post>
-    <table cellspacing=5>
-    <tr><td align=right>Phone #:</td><td>&nbsp;</td><td><input type=text name="phone" id="fm" class=" ui-corner-all ui-widget" value="<? echo $phone; ?>"></td></tr>
-    <tr><td align=right>Password:</td><td>&nbsp;</td><td><input type=password name="password" class=" ui-corner-all ui-widget" value="<? echo $password; ?>"></td></tr>
-    <tr><td align=right>&nbsp;</td><td>&nbsp;</td><td><button  style="margin-top:.5em" onclick="this.form.submit();" class="ui-button ui-corner-all ui-widget">Login</button></td></tr>
-    </table>
-    </dd>
-    
-    </form>  
+    echo "<p>E-mail $admin_email for help.</p>";
+
+    echo "<p>To quit, just uncheck the boxes and hit save. To change phone numbers, uncheck the boxes and login with a new phone number or contact the admin.</p>";
+
+}
+
+else {            # loggedin and/or phone is false -> start login screen (phone # and password)
+    echo    
+        '<br>'.
+        '<h3 style="cursor:pointer">Login</h3>'.
+        '<dd>'.
+        '<p style="...">'.
+        "<p>";
+    if (isset($error))
+        echo "$error";
+echo<<<STOP_ECHO
+        </p>
+        <form method=post>
+            <table cellspacing=5>
+            <tr><td align="right">Phone #:</td>
+            <td>&nbsp;</td>
+STOP_ECHO;
+        echo
+            '<td><input type=text name="phone" id="fm" class=" ui-corner-all ui-widget" value="'.$phone.'"></td></tr>'."\n".
+            '<tr><td align="right">Password:</td>'.
+                '<td>&nbsp;</td>'.
+                '<td><input type=password name="password" class=" ui-corner-all ui-widget" value="'.$password.'"></td></tr>';
+echo<<<STOP_ECHO
+            <tr><td align="right">&nbsp;</td>
+                <td>&nbsp;</td>
+                <td><button  style="margin-top:.5em" onclick="this.form.submit();" class="ui-button ui-corner-all ui-widget">Login</button></td></tr>
+            </table>
+        </dd>
+        </form>
+STOP_ECHO;
+}
+?>
+
 
 <br/>  
   
-<? }  ?>
-
 <p><i><small>Powered by <a href="https://github.com/dustball/opencrisisline$volunteer">Open Crisis Line</a></small></i></p>
 </div>
 </div>

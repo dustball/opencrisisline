@@ -1,25 +1,36 @@
-<?
+<?php
 
     include 'config.php';
 
-    # Run this once a year to confirm they still opt-in and -- haven't changed numbers etc. 
-    
-    if(!defined('STDIN')) {
+    if ( ! defined('STDIN')) {
         die("Please run this from the command-line only.");
-    }
+}
+    echo "Run this once a year to confirm they still opt-in and -- haven't changed numbers etc.\n";
+    echo "\n";
+    echo "Before running this script, run the query\n";
+    echo "\tUPDATE opencrisisline SET verified=' ' WHERE verified='Y'\n";
+    echo "Perhaps from MySQL Workbench or phyMyAdmin.\n";
+    echo "\n";
+    echo 'If this query is run from MySQL WorkBench, "Safe Update" must be turned off'."\n";
+    echo '(Edit->Preferences->SQL Editor (scroll to bottom)->Clear "Safe Updates" and then reconnect'."\n";
 
     $from = $help_line_number;
         
     # To run this script, first: update opencrisisline set verified=' ' where verified='Y';
     
-    $sql = "select * from $table_name where verified=' '";
+    $sql = "SELECT * FROM $table_name WHERE verified=' '";
        
     # Uncomment this line for testing purposes (only message the admin)
     #$sql = "select * from $table_name where handle='$admin_handle'";
-    
-    $result = mysql_query($sql) or logAndDie("Failed Query #V103: ".mysql_error());
-    
-    while ($row = mysql_fetch_assoc($result)) {
+
+    try {
+        $rows = $db->query($sql)->fetchAll();                                   # hey memory is cheap, fetch all at once
+    }
+    catch (PDOException $e) {
+        logAndDie("Failed Query #V103: " . $e->getMessage() .'->'. $e->getCode());
+    }
+
+    foreach ($rows as $row) {
         $name = trim(ucfirst($row['handle']));
         $to = '+1' . $row['phone'];
         $m1 = "$name, thank you for volunteering with the $system_name system!  This is a yearly check to see if we still have (1/2)";
@@ -28,10 +39,12 @@
         print ("\n");
         sms0($from,$to,$m1);
         sms0($from,$to,$m2);
-        $sql2 = "update $table_name set verified='?' where phone='".$row['phone']."'";
-        $result2 = mysql_query($sql2) or logAndDie("Failed Query #V104: ".mysql_error());
-        sleep(1);        
+        $sql2 = "UPDATE $table_name SET verified='?' WHERE phone='".$row['phone']."'";
+        try {
+            $result2 = $db->query($sql2);
+        }
+        catch (PDOException $e) {
+            logAndDie("Failed Query #V104: " . $e->getMessage() .'->'. $e->getCode());
+        }
+        sleep(1);
     }
-    
-    
-?>

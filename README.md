@@ -6,13 +6,13 @@
 
 This is an open-source suicide / crisis line that runs on PHP and MySQL.
 
-A paid Twilio account is required.  
+A paid Twilio account is required (see Installation:Twilio setup notes below).  
 
 ### How it works
 
 This software creates a help line in the cloud which can be called by anybody that knows the number.  The current version is intended to be used by medium-to-large sized groups and organizations to support themselves, as opposed to a public help line which may have different needs.
 
-With just a web hosting account (that supports php 5.6 and MySQL) and paid Twilio account, you can launch a crisis line in an area code (and possibly number) of your choosing. Twilio costs $1 per month (for the phone number) plus 2 cents per minute (counting both legs of the connection). 
+With just a web hosting account supporting PHP (shown to work with PHP 7.x and  and is believed to run but has not been shown to run in PHP PHP 5.6) and MySQL and paid Twilio account (see Installation:Twilio setup notes below), you can launch a crisis line in an area code (and possibly number) of your choosing. Twilio costs $1 per month (for the phone number) plus 2 cents per minute (counting both legs of the connection). 
 
 Once installation (see below) is finished, the administrator should invite volunteers to sign up.  They sign themselves up with their phone number and a master password, specify their handle and pick which phone pools to opt-in to. (Unchecking all the options essentially puts their number on 'hold', which allows volunteers to mark themselves away for vacations or other reasons.)  
 
@@ -28,7 +28,8 @@ Notice: this project was just uploaded to GitHub - please allow a few days for t
 
 ## Installation
 
-1. Make sure PHP 5.6 is working on your web host (see below for Dreamhost specifics)
+1. Shown to run on Mint and Amazon AMI systems and assumed to run on other other Linux systems. Not tested on macOS or Windows
+1. Assure that PHP either 5.6 or 7.x is working on your web host (see below for Dreamhost specifics)
 1. Known to work against MySQL 5.7.28
 2. `cp config.sample config.php` and edit
 3. `php setup.php` to test setup and create database schema 

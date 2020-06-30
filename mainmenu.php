@@ -7,9 +7,9 @@
     
 ?>
 <Response>
-    <Say>Welcome to <? echo $system_name; ?></Say>
+    <Say>Welcome to <?php echo $system_name; ?></Say>
     <Gather numDigits="1" action="menu-digit.php" method="POST">
-        <?
+        <?php
     
         for ($i=0;$i<3;$i++) {
             echo "<Say>To speak with any $volunteer, press 1.</Say>";

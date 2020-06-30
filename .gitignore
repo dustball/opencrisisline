@@ -1,5 +1,6 @@
-config.php
 .htaccess
 .DS_Store
 *.bak
 *.txt
+config.php
+./idea
