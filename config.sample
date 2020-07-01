@@ -52,7 +52,7 @@ function catText($text, $add){
 if ("+16505551212" == $help_line_number)
     $error_text = catText($error_text, '$help_line_number needs to be replaced with phone number assigned by Twilio');
 if ("(650) 555-HELP" == $friendly_phone)
-    $error_text  = catText($error_text, '$friendly_phone needs to be changed to a human friendly version of your Twilio assigned phone number');
+    $error_text = catText($error_text, '$friendly_phone needs to be changed to a human friendly version of your Twilio assigned phone number');
 if ("Our Help Line" == $system_name)
     $warning_text = catText($warning_text,'Consider naming your help line to something else other than "Our Help Line"');
 if ("ocl-logo.png" == $logo)
@@ -80,14 +80,13 @@ if ("dbpass" == $db_pass)
 # no value test for $table_name at this time
 # no value test for $db_charset at this time
 
-if (!$warning_text)
-    echo "Cautions:\n".$warning_text;
+if ($warning_text)
+    echo "CAUTIONS:\n$warning_text\n\n";
 
-if (!$error_text){
-    echo "Fatal Warnings:\n".$error_text;
-    die ("Address the above Fatal Warnings and then run setup.php again from the command line");
+if ($error_text){
+    echo "FATAL ERRORS:\n$error_text\n\nAddress the above Fatal Errors and then run setup.php again from the command line\n\n";
+    die();
 }
-
 
 require "twilio.php";
 
