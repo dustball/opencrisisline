@@ -16,7 +16,7 @@ With just a web hosting account, PHP 7.x, MySQL and a paid Twilio account (see I
 
 Once installation (see below) is finished, the administrator should invite volunteers to sign up.  They sign themselves up with their phone number and a master password, specify their handle and pick which phone pools to opt-in to. (Unchecking all the options essentially puts their number on 'hold', which allows volunteers to mark themselves away for vacations or other reasons.)  
 
-The system supports one, two, or three phone pools.  For example, you could have 1) the general pool 2) a group that may have a certain speciality, training or focus and 3) a graveyard (night shift) pool -- volunteers that specifically opt-in to recieve calls at any time of day.  When a caller reaches the line, they will be presented with the appropriate number of options.  Example: "To reach any volunteer, press 1. For code red, press 2.  For graveyward / night shift, press 3.".  These are only examples, however, and you can define whatever phone pools you want.
+The system supports one, two, or three phone pools.  For example, you could have 1) the general pool 2) a group that may have a certain speciality, training or focus and 3) a graveyard (night shift) pool -- volunteers that specifically opt-in to receive calls at any time of day.  When a caller reaches the line, they will be presented with the appropriate number of options.  Example: "To reach any volunteer, press 1. For code red, press 2.  For graveyard / night shift, press 3.".  These are only examples, however, and you can define whatever phone pools you want.
 
 Once an option is selected by the caller, it will call 6 ([configurable](https://github.com/dustball/opencrisisline/blob/master/config.sample)) random people from the appropriate list.  It will connect the call with whomever answers first and hang up on the rest.  If nobody answers -- or a voicemail system picks up -- the caller should hang up and call back for a different random selection.  (Note: callers almost always get through the first time, but your messaging to potential callers should include note of how to handle such a situation.)
 
@@ -49,10 +49,10 @@ How to test:
 1. It should ring your phone.  
 1. Optional: answer and talk for more than 15 seconds to trigger the 'call end' code
 
-In case of error, check Twilio's [error logs](https://www.twilio.com/console/debugger) as well as the web access logs (`tail -f ~/logs/*/https/error.log` on Dreamhost, for rexample).
+In case of error, check Twilio's [error logs](https://www.twilio.com/console/debugger) as well as the web access logs (`tail -f ~/logs/*/https/error.log` on Dreamhost, for example).
 
 ### Tested Configurations
 
 * Hosting platforms: Tested OK on Mint, Amazon AMI, and Dreamhost.   
 * PHP: Tested OK on 7.5 and 7.7 but expected to work with all 7.x versions
-* MySQL: Tested OK on 5.7.28 but expexted to work any modern MySQL or MariaDB
+* MySQL: Tested OK on 5.7.28 but expected to work any modern MySQL or MariaDB
