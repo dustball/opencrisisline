@@ -4,63 +4,89 @@
 # defines db as the database handle
 
 # Help line config
-$anonymous = FALSE;                  # Setting to FALSE will inform both caller and volunteer who they talked to
-#TODO:: assign $help_line_number the phone number assigned by Twilio, e.g., "+12025551212"
-$help_line_number = "";  # Must include prefix of +1 followed by phone number, no spaces or other characters
-#TODO:: assign $friendly_phone with a more human friendly version of the phone number, e.g., "(202) 555-1212"
-$friendly_phone = "";  # Human friendly version of the above number
-#TODO:: assign $system_name a human friendly name, e.g., "Our Help Line"
-$system_name = "Our Help Line";      # The name for your help line
-#TODO:: assign $logo the name of the image file to be shown on the registration page, e.g., "ocl-logo.png"
-$logo = "ocl-logo.png";              # URL to logo (relative or absolute OK)
-#TODO:: assign $volunteer what a volunteer should be called, e.g., "volunteer"
-$volunteer = "volunteer";            # What do you call volunteers?
-#TODO:: assign $master_pass the password to be used by volunteers registering phone numbers and duties, e.g., "ABadPassword666?"
-$master_pass = "";            # See documentation (this password may show up as *'s depending on your text editor)
-#TODO:: assign $people_to_call how many people will be called when someone calls in asking for help, e.g., 6
-$people_to_call = 6;                 # How many people to call at once
+$anonymous = FALSE;                  #TODO:: Setting to FALSE will inform both caller and volunteer who they talked to
+$help_line_number = "+16505551212";  #TODO:: Must include prefix of +1 followed by phone number, no spaces or other characters
+$friendly_phone = "(650) 555-HELP";  #TODO:: Human friendly version of the above number
+$system_name = "Our Help Line";      #TODO:: The name for your help line
+$logo = "ocl-logo.png";              #TODO:: URL to logo (relative or absolute OK)
+$volunteer = "volunteer";            #TODO:: What do you call volunteers?
+$master_pass = "hunter2";            #TODO:: See documentation (this password may show up as *'s depending on your text editor)
+$people_to_call = 6;                 #TODO:: How many people to call at once
 
 # Admin config
-#TODO:: assign $admin_email the administrator's email address to be notified of runtime issues, e.g., "adminperson@helpline.com"
-$admin_email = "";
-#TODO:: assign $admin_phone the administrator's phone number that volunteers may contact for help (sms.php)
-$admin_phone = "";
-#TODO:: assign $admin_handle the user name for the OpenCrisisLine administrator, e.g., "adminperson"
-$admin_handle = "";
-#TODO:: assign $report_number the telephone number to receive status texts, e.g., "+13135551212"
-$report_number = "";     # Optional - report all successful calls to this number, set to NULL to disable
+$admin_email = "admin@email.com";    #TODO:: assign $admin_email the administrator's email address to be notified of runtime issues
+$admin_phone = "650.555.1212";       #TODO:: assign $admin_phone the administrator's phone number that volunteers may contact for help (sms.php)
+$admin_handle = "Admin";             #TODO:: assign $admin_handle the user name for the OpenCrisisLine administrator
+$report_number = "";                 #TODO:: Optional - report all successful calls to this number, set to NULL to disable
 
 # Twilio config
 $ApiVersion = "2010-04-01";                          # Do not change
-#TODO:: assign $AccountSid, ~20 character string from https://www.twilio.com/console
-$AccountSid = "";                             # ***NOT*** phone number, get from https://www.twilio.com/console
-#TODO:: assign $AuthToken, ~20 character string from https://www.twilio.com/console, Twilio's equivalent of a password
-$AuthToken = "";                                # Get from https://www.twilio.com/console
+$AccountSid = "AC01234567890123456789012345678901";  #TODO:: ***NOT*** phone number, get from https://www.twilio.com/console
+$AuthToken = "01234567890123456789012345678901";     #TODO:: Get from https://www.twilio.com/console
 
 # Database config
-#TODO:: assign $db_host the address of the database, e.g., localhost, IP address, fully qualified domain name
-$db_host = "";
-#TODO:: assign $db_name the name of the database containing volunteer phone numbers and handles, e.g., "ocl_db"
-$db_name = "";
-#TODO:: assign $db_user an authorized user of the above database, e.g., "adminperson"
-$db_user = "";
-#TODO:: assign $db_pass the password for $db_user to access the $db_name database, e.g., "AwfulPassword2!"
-$db_pass = "";
-#TODO:: assign $db_charset the character set used in the $db_name database, e.g., "utf8mb4";
-$db_charset = "";
-#TODO:: assign $table_name the table to maintain the volunteers' phone number, handle, and responsibilities
-$table_name = "";
+$db_host = "dbhostname.sample.com";  #TODO:: localhost, IP address, fully qualified domain name
+$db_name = "databasename";           #TODO:: name of the database containing volunteer phone numbers and handles, e.g., "ocl_db"
+$db_user = "dbuser";                 #TODO:: an authorized user of the above $db_name database
+$db_pass = "dbpass";                 #TODO:: the password for $db_user to access the $db_name database
+$table_name = "opencrisisline";      #TODO:: table maintaining the volunteers' phone number, handle, and responsibilities
+$db_charset = 'utf8mb4';             #don't change unless you have a reason to do so
 
 # Additional menu items, comment out or set to NULL to disable them
-#TODO:: assign $option2_column the column name for a second volunteer responsibility, e.g., "opt2"
-$option2_column = "opt2";
-#TODO:: assign $option2_friendly name for $option2_column that is used for volunteer responsibilities registration and in the caller's menu
-$option2_friendly = "Code Red";
-#TODO:: assign $option2_column the column name for a third volunteer responsibility, e.g., "opt3"
-$option3_column = "opt3";
-#TODO:: assign $option3_friendly name for $option3_column that is used for volunteer responsibilities registration and in the caller's menu
+$option2_column = "opt2";            #TODO:: column name for a second volunteer responsibility
+$option2_friendly = "Code Red";      #TODO:: human friendly name for $option2_column that is used for volunteer responsibilities registration and in the caller's menu
+$option3_column = "opt3";            #TODO:: the column name for a third volunteer responsibility
+#TODO:: friendly name for $option3_column that is used for volunteer responsibilities registration and in the caller's menu
 #TODO:: $option3_friendly must contain the word "Graveyard" for graveyard calling (call less people) to be enacted
 $option3_friendly = "Graveyard / Night Shift";
+
+# --------------------------------- no more editable entries -------------------------------
+
+$warning_text = NULL;
+$error_text = NULL;
+
+function catText($text, $add){
+    return $text.$add."\n";
+}
+
+if ("+16505551212" == $help_line_number)
+    $error_text = catText($error_text, '$help_line_number needs to be replaced with phone number assigned by Twilio');
+if ("(650) 555-HELP" == $friendly_phone)
+    $error_text = catText($error_text, '$friendly_phone needs to be changed to a human friendly version of your Twilio assigned phone number');
+if ("Our Help Line" == $system_name)
+    $warning_text = catText($warning_text,'Consider naming your help line to something else other than "Our Help Line"');
+if ("ocl-logo.png" == $logo)
+    $warning_text = catText($warning_text, 'Consider using your own logo for the index.php page');
+if ("hunter2" == $master_pass)
+    $warning_text = catText($error_text, 'Replace $master_pass with another value than "hunter2"');
+# no value test for people_to_call at this time
+
+if ("admin@email.com" == $admin_email)
+    $error_text = catText($error_text, "Replace $admin_email with the admininstrator's email address");
+if ("650.555.1212" == $admin_phone)
+    $error_text = catText($error_text, 'assign $admin_phone the administrator\'s phone number that volunteers may contact for help (sms.php)');
+if ("Admin" == $admin_handle)
+    $warning_text = catText($warning_text,'Consider using a \$admin_handle other than "Admin" for the OpenCrisisLine administrator');
+# no value test for $report_number at this time
+
+if ("dbhostname.sample.com" == $db_host)
+    $error_text = catText($error_text, 'Change $db_host to localhost, IP address, or a fully qualified domain name');
+if ("databasename" == $db_name)
+    $warning_text = catText($warning_text, 'Consider changing $db_name to something other than');
+if ("dbuser" == $db_user)
+    $warning_text = catText($warning_text, 'Consider changing the name of the $db_user to something other than "dbuser"');
+if ("dbpass" == $db_pass)
+    $error_text = catText($error_text, 'Change the password to the database to something other than "dbpass"');
+# no value test for $table_name at this time
+# no value test for $db_charset at this time
+
+if ($warning_text)
+    echo "CAUTIONS:\n$warning_text\n\n";
+
+if ($error_text){
+    echo "FATAL ERRORS:\n$error_text\n\nAddress the above Fatal Errors and then run setup.php again from the command line\n\n";
+    die();
+}
 
 require "twilio.php";
 
@@ -77,7 +103,7 @@ function logAndDie($err) {
 }
 
 function get_db() {
-    global $db_host, $db_name, $db_charset;                             # sets up $sdn, assigned in "# Database config" above
+    global $db_host, $db_name, $db_charset;                             # sets up $dsn, assigned in "# Database config" above
     global $db_user, $db_pass;                                          # sets up $dbh, assigned in "# Database config" above
     $dsn = "mysql:host=$db_host;dbname=$db_name;charset=$db_charset";                                                   # dsn := data source name
     $options = [

@@ -3,4 +3,4 @@
 *.bak
 *.txt
 config.php
-./idea
+idea/
