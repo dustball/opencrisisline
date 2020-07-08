@@ -56,3 +56,8 @@ In case of error, check Twilio's [error logs](https://www.twilio.com/console/deb
 * Hosting platforms: Tested OK on Mint, Amazon AMI, and Dreamhost.   
 * PHP: Tested OK on 7.5 and 7.7 but expected to work with all 7.x versions
 * MySQL: Tested OK on 5.7.28 but expected to work any modern MySQL or MariaDB
+
+## Development Team
+
+* Brian Klug ([@dustball](https://github.com/dustball))
+* Tom Moore ([@tmoorebetazi](https://github.com/dtmoorebetazi))
