@@ -24,7 +24,7 @@ At the end of the call, the system will inform both the caller and the volunteer
 
 This software is simple but has been reliably deployed for years.
 
-Current status: This project was recently ported to PHP 7.x - please allow a few days for the dust to settle before installing.  Please contact [dustball](https://github.com/dustball) with any questions -- July 1st, 2020.
+Current status: This is production-ready software currently running at least one real crisis line.
 
 ## Installation
 
@@ -43,19 +43,19 @@ Twilio setup:
 
 How to test:
 
-1. Make sure `setup.php` passes all tests 
-1. Have a friend call the line or use a test phone - do not use your own phone 
-1. The friend should dial "8" (this is a hidden menu option for testing)
+1. Make sure `setup.php` passes all tests.
+1. Have a friend call the line or use a test phone - do not use your own phone.
+1. The friend should dial "8" (this is a hidden menu option for testing).
 1. It should ring your phone.  
-1. Optional: answer and talk for more than 15 seconds to trigger the 'call end' code
+1. Optional: answer and talk for more than 15 seconds to trigger the 'call end' code.
 
 In case of error, check Twilio's [error logs](https://www.twilio.com/console/debugger) as well as the web access logs (`tail -f ~/logs/*/https/error.log` on Dreamhost, for example).
 
 ### Tested Configurations
 
 * Hosting platforms: Tested OK on Mint, Amazon AMI, and Dreamhost.   
-* PHP: Tested OK on 7.5 and 7.7 but expected to work with all 7.x versions
-* MySQL: Tested OK on 5.7.28 but expected to work any modern MySQL or MariaDB
+* PHP: Tested OK on 7.5 and 7.7 but expected to work with all 7.x versions.
+* MySQL: Tested OK on 5.7.28 but expected to work any modern MySQL or MariaDB.
 
 ## Development Team
 
