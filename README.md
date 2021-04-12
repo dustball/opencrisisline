@@ -60,4 +60,4 @@ In case of error, check Twilio's [error logs](https://www.twilio.com/console/deb
 ## Development Team
 
 * Brian Klug ([@dustball](https://github.com/dustball))
-* Tom Moore ([@tmoorebetazi](https://github.com/dtmoorebetazi))
+* Tom Moore ([@twmoore3rd](https://github.com/twmoore3rd))
